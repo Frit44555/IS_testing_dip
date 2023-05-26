@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="main_window_prefix">
+    <file>profile_icon.png</file>
+  </qresource>
+</RCC>
