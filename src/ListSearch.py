@@ -1,5 +1,6 @@
 from UI.Ui_ListSearch import Ui_ListSearch
 from PyQt5.QtWidgets import QWidget, QTableWidgetItem
+from PyQt5.QtCore import pyqtSlot
 from psycopg2 import Error
 
 
@@ -17,11 +18,15 @@ class ListSearch(QWidget, Ui_ListSearch):
         # ________________________________
 
         # Функции________________________________
-        self.__fill_table()
+        self.__fill_tables()
         self.__set_action()
         # ________________________________
 
-    def __fill_table(self):
+    def __set_action(self):
+        self.start_lesson_push_button.clicked.connect(self.__open_lesson)
+        self.start_test_push_button.clicked.connect(self.__open_testing)
+
+    def __fill_tables(self):
         """
         Заполнение таблиц 'Тесты' и 'Уроки'.
         :return:
@@ -58,16 +63,12 @@ class ListSearch(QWidget, Ui_ListSearch):
         else:
             return
 
-    def __set_action(self):
-        self.start_lesson_push_button.clicked.connect(self.__open_lesson)
-
-    def __fill_list_lessons(self):
-        pass
-
+    @pyqtSlot()
     def __open_lesson(self):
         lesson_id = 1
         self.__main_window.open_lesson(lesson_id)
         self.hide()
 
+    @pyqtSlot()
     def __open_testing(self):
         pass
