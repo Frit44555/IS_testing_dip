@@ -1,7 +1,8 @@
-from UI import Ui_ResultUser
+from PyQt5.QtWidgets import QWidget
+from UI.Ui_ResultUser import Ui_ResultUser
 
 
-class ResultUser(Ui_ResultUser):
+class ResultUser(QWidget, Ui_ResultUser):
     def __init__(self, user_id, data_base, parent=None):
         super().__init__(parent)
         self.setupUi(self)

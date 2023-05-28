@@ -1,10 +1,11 @@
-from UI import Ui_Testing
+from PyQt5.QtWidgets import QWidget
+from UI.Ui_Testing import Ui_Testing
 
 
-class Testing(Ui_Testing):
+class Testing(QWidget, Ui_Testing):
     def __init__(self, user_id, test_id, data_base, parent=None):
         super().__init__(parent)
-        self.setuoUi(self)
+        self.setupUi(self)
 
         # Переменные________________________________
         self.__user = user_id
