@@ -91,7 +91,7 @@ CREATE TABLE tests(
 	test_id int GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
 	quest_id int[] NOT NULL,
 	tag_id int NOT NULL,
-	name varchar(200) NOT NULL,
+	name varchar(200) UNIQUE NOT NULL,
 	type_test types_tests NOT NULL,
 	quantity_of_questions int DEFAULT 10 NOT NULL,
 	time_to_complete int DEFAULT 15 NOT NULL,
