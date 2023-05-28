@@ -1,11 +1,14 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSlot
 from UI.Ui_MainWindow import Ui_MainWindow
+import Words as wrd
+
+# My widgets
 from Authentication import Authentication
 from ListSearch import ListSearch
 from Lesson import Lesson
 from MainMenu import MainMenu
-import Words as wrd
+from Testing import Testing
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -18,6 +21,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__list_search = None
         self.__lesson = None
         self.__authentication = None
+        self.__testing = None
 
         # Картеж
         # Для пользователя (ID пользователя, ID группы, логин, имя, фамилия, отчество, дату регистрации, примечания)
@@ -26,7 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # ________________________________
 
         # Объекты________________________________
-        self.__authentication = Authentication(main_window=self, data_base=self.__db)
+        self.__authentication = Authentication(main_window=self, data_base=self.__db, parent=self)
         self.work_vertical_layout.addWidget(self.__authentication)
         # ________________________________
 
@@ -65,12 +69,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Выполняет переход к главному виджету, в зависимости от авторизированного пользователя.
         :return None
         """
-        try:
-            if self.__lesson:
-                self.__destroy_active_widget(self.__lesson)
-            self.__list_search.show()
-        except BaseException as BE:
-            print('FATAL ERROR:', BE)
+        # Включение кнопок "Выйти" и "Обновить"
+        self.exit_push_button.setEnabled(True)
+        self.refresh_push_button.setEnabled(True)
+        if len(self.__user) == 8:
+            try:
+                if self.__lesson:
+                    self.__destroy_active_widget(self.__lesson)
+                if self.__testing:
+                    self.__destroy_active_widget(self.__testing)
+                self.__list_search.show()
+            except BaseException as BE:
+                print('FATAL ERROR:', BE)
 
     @pyqtSlot()
     def __refresh_data(self):
@@ -78,14 +88,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         Обновляет данные таблиц и списков главных виджетов.
         :return None
         """
-        try:
-            self.__destroy_active_widget(self.__list_search)
-            del self.__list_search
-            self.__list_search = ListSearch(main_window=self, data_base=self.__db, group_user=self.__user[1])
-            self.work_vertical_layout.addWidget(self.__list_search)
-        except BaseException as BE:
-            print('EXECUTION ERROR:', BE)
-
+        if len(self.__user) == 8:
+            try:
+                self.__destroy_active_widget(self.__list_search)
+                self.__list_search = ListSearch(main_window=self, data_base=self.__db, user_id=self.__user[0],
+                                                group_user=self.__user[1], parent=self)
+                self.work_vertical_layout.addWidget(self.__list_search)
+            except BaseException as BE:
+                print('EXECUTION ERROR:', BE)
 
     @pyqtSlot()
     def __authentication_again(self):
@@ -107,8 +117,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__destroy_active_widget(self.__lesson)
         if self.__authentication:
             self.__destroy_active_widget(self.__authentication)
+        if self.__testing:
+            self.__destroy_active_widget(self.__testing)
 
-        self.__authentication = Authentication(main_window=self, data_base=self.__db)
+        self.__authentication = Authentication(main_window=self, data_base=self.__db, parent=self)
         self.work_vertical_layout.addWidget(self.__authentication)
 
     @pyqtSlot()
@@ -131,6 +143,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__list_search = None
         elif isinstance(active_widget, Authentication):
             self.__authentication = None
+        elif isinstance(active_widget, Testing):
+            self.__testing = None
 
     def put_form_for_user(self, user):
         """
@@ -143,7 +157,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__destroy_active_widget(self.__authentication)
             self.__user = user
             self.__set_action()
-            self.__list_search = ListSearch(main_window=self, data_base=self.__db, group_user=user[1])
+            self.__list_search = ListSearch(main_window=self, data_base=self.__db, group_user=user[1],
+                                            user_id=user[0], parent=self)
             self.work_vertical_layout.addWidget(self.__list_search)
         except BaseException as BE:
             print('FATAL ERROR:', BE)
@@ -168,9 +183,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         :param lesson_id:
         :return None
         """
-        # ПЕРЕДАЙ ID МАТЕРИАЛА А НЕ ГРУППЫ
-        self.__lesson = Lesson(data_base=self.__db, lesson_id=lesson_id)
+        # Выключение кнопок "Выйти" и "Обновить"
+        self.exit_push_button.setEnabled(False)
+        self.refresh_push_button.setEnabled(False)
+
+        self.__lesson = Lesson(data_base=self.__db, lesson_id=lesson_id, parent=self)
         self.work_vertical_layout.addWidget(self.__lesson)
 
-    def open_testing(self):
-        pass
+    def open_testing(self, test_id):
+        """
+        Открывает виджет прохождения тестирования
+        :param test_id:
+        :return:
+        """
+        # Выключение кнопок "Выйти" и "Обновить"
+        self.exit_push_button.setEnabled(False)
+        self.refresh_push_button.setEnabled(False)
+
+        self.__testing = Testing(data_base=self.__db, test_id=test_id, user_id=self.__user[0], parent=self)
+        self.work_vertical_layout.addWidget(self.__testing)
