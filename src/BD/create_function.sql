@@ -389,7 +389,8 @@ LANGUAGE SQL;
 
 -- Функция создания результата
 CREATE OR REPLACE FUNCTION create_result(in_user_id int, in_test_id int, in_answer_id int[], in_time_start timestamp without time zone,
-										in_time_finish timestamp without time zone, in_comment_user text DEFAULT NULL)
+										in_time_finish timestamp without time zone, in_comment_user text DEFAULT NULL,
+										in_verified boolean DEFAULT FALSE)
 RETURNS void AS
 $$
 	/*
@@ -397,9 +398,8 @@ $$
 	Описание: Эта функция создаёт запись результатов в таблицу "result"
 	Принимает аргументы: ID пользователя, ID теста, массив ID ответов, время начала, время конца, комментарии пользователя
 	*/
-	INSERT INTO results(user_id, test_id, answer_id, time_start, time_finish, comment_user)
-	VALUES(in_user_id, in_test_id, in_answer_id, in_time_start, in_time_finish, in_comment_user)
-	RETURNING answer_id;
+	INSERT INTO results(user_id, test_id, answer_id, time_start, time_finish, comment_user, verified)
+	VALUES(in_user_id, in_test_id, in_answer_id, in_time_start, in_time_finish, in_comment_user, in_verified);
 $$
 LANGUAGE SQL;
 
