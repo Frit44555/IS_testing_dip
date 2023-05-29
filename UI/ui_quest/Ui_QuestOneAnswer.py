@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_QuesOneAnswer(object):
+class Ui_QuestOneAnswer(object):
     def setupUi(self, QuesOneAnswer):
         QuesOneAnswer.setObjectName("QuesOneAnswer")
         QuesOneAnswer.resize(900, 500)
