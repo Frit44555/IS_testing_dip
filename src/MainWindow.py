@@ -190,7 +190,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__lesson = Lesson(data_base=self.__db, lesson_id=lesson_id, parent=self)
         self.work_vertical_layout.addWidget(self.__lesson)
 
-    def open_testing(self, test_id):
+    def open_testing(self, test_id, type_testing):
         """
         Открывает виджет прохождения тестирования
         :param test_id:
@@ -200,5 +200,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.exit_push_button.setEnabled(False)
         self.refresh_push_button.setEnabled(False)
 
-        self.__testing = Testing(data_base=self.__db, test_id=test_id, user_id=self.__user[0], parent=self)
+        try:
+            questions = self.__db.get_questions(test_id)
+        except BaseException as BE:
+            print('EXECUTION ERROR:', BE)
+
+        self.__testing = Testing(data_base=self.__db, test_id=test_id, questions=questions,
+                                 user_id=self.__user[0], type_testing=type_testing, parent=self)
         self.work_vertical_layout.addWidget(self.__testing)
