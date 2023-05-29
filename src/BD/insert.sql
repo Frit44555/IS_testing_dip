@@ -34,7 +34,7 @@ INSERT INTO questions(type_quest, bals, image, question, answer1, answer2, answe
 		   'байт',
 		   'Мбит',
 		   'Кбайт/с',
-		   '1+4');
+		   'мбит/с|Кбайт/с');
 INSERT INTO questions(type_quest, bals, image, question, answer1, answer2, answer3, answer4, right_answer)
 	VALUES('ONE ANSWER', 1, NULL, 'Конфигурация (топология) локальной сети, в которой все рабочие станции соединены с сервером (файл-сервером), называется',
 		   'звезда',
