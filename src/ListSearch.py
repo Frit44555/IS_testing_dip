@@ -92,6 +92,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         row_id = self.test_table_widget.currentIndex().row()
         test_name = self.test_table_widget.item(row_id, 0).text()
         self.__test_id = [i[0] for i in self.__working_data_on_tests if test_name in i]
+        self.__test_id.append(self.test_table_widget.item(row_id, 1).text())
         self.chose_test.setText(test_name)
 
     def __get_lesson_id(self):
@@ -114,7 +115,7 @@ class ListSearch(QWidget, Ui_ListSearch):
     def __open_testing(self):
         if self.__test_id:
             self.hide()
-            self.__main_window.open_testing(self.__test_id)
+            self.__main_window.open_testing(self.__test_id[0], self.__test_id[1])
 
     def __refresh_result(self):
         pass
