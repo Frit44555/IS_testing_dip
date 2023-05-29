@@ -126,18 +126,12 @@ class Authentication(QWidget, Ui_Authentication):
         Регистрация пользователя в системе.
         :return None
         """
-        print(1)
         # Получить текст с эдитов
         surname = self.surname_line_edit.text()
-        print(1)
         name = self.name_line_edit.text()
-        print(1)
         patronymic = self.patronymic_line_edit.text()
-        print(1)
         login = self.login_line_edit_register.text()
-        print(1)
         password = self.password_line_edit_register.text()
-        print(2)
         # Проверка ФИО
         if len(surname.split()) != 1:
             self.hint_registration_text_browser.setText(wrd.hint_authentication['wrong_surname'])
@@ -148,7 +142,6 @@ class Authentication(QWidget, Ui_Authentication):
         elif not 0 <= len(patronymic.split()) <= 1:
             self.hint_registration_text_browser.setText(wrd.hint_authentication['wrong_patronymic'])
             return
-        print(3)
         # Проверка правильности логина и пароля
         if self.__check_login_password(login, password, self.hint_registration_text_browser):
             return
