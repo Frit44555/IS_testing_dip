@@ -7,6 +7,7 @@ import datetime
 # My widgets
 from UI.Ui_Testing import Ui_Testing
 from quest.QuestOneAnswer import QuestOneAnswer
+from quest.QuestManyAnswers import QuestManyAnswers
 
 
 class Testing(QWidget, Ui_Testing):
@@ -35,6 +36,10 @@ class Testing(QWidget, Ui_Testing):
         # ________________________________
 
     def __set_action(self):
+        """
+        Устанавливает действия кнопкам
+        :return None
+        """
         self.complete_push_button.clicked.connect(self.__close)
         self.__assembly_testing()
 
@@ -82,7 +87,7 @@ class Testing(QWidget, Ui_Testing):
         if self.__questions[i][1] == 'ONE ANSWER':
             return QuestOneAnswer(data=self.__questions[i], parent=self)
         elif self.__questions[i][1] == 'MANY ANSWERS':
-            pass
+            return QuestManyAnswers(data=self.__questions[i], parent=self)
         elif self.__questions[i][1] == 'SCALE':
             pass
         elif self.__questions[i][1] == 'FREE RESPONSE':
