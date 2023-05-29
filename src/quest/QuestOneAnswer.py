@@ -4,7 +4,7 @@ import random
 
 # My widgets
 from UI.ui_quest.Ui_QuestOneAnswer import Ui_QuestOneAnswer
-from src.quest.СorrectnessWidget import CorrectnessWidget
+from src.quest.StatusAnswerWidget import StatusAnswerWidget
 import src.Words as wrd
 
 
@@ -24,7 +24,7 @@ class QuestOneAnswer(QWidget, Ui_QuestOneAnswer):
         # ________________________________
 
         # Объекты________________________________
-        self.__correctness_widget = CorrectnessWidget(self)
+        self.__correctness_widget = StatusAnswerWidget(self)
         self.verticalLayout.addWidget(self.__correctness_widget)
         # ________________________________
 
