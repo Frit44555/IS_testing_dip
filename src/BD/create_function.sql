@@ -55,7 +55,7 @@ DROP FUNCTION IF EXISTS create_answer;
 -- Функция создания результата.  ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_answer И ВЫЗЫВАЕТСЯ ПОСЛЕ НЕЁ. 2
 DROP FUNCTION IF EXISTS create_result;
 
--- Функция создания ответа.	 ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_test И ВЫЗЫВАЕТСЯ ДО НЕЁ. 1
+-- Функция создания вопросов. ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_test И ВЫЗЫВАЕТСЯ ДО НЕЁ. 1
 DROP FUNCTION IF EXISTS create_question;
 
 -- Функция создания теста.  ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_question И ВЫЗЫВАЕТСЯ ПОСЛЕ НЕЁ. 2
