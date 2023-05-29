@@ -193,7 +193,7 @@ class DataBaseQuery:
         result = self.__cursor.fetchone()
         return result if result else 1
 
-    def create_result(self, user_id, test_id, answer_id, time_start, time_finish, comment_user=None):
+    def create_result(self, user_id, test_id, answer_id, time_start, time_finish, comment_user=None, verified=False):
         """
         ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_answer И ВЫЗЫВАЕТСЯ ПОСЛЕ НЕЁ. 2
         Описание: Эта функция создаёт запись результатов в таблицу "result".
@@ -201,7 +201,8 @@ class DataBaseQuery:
                     комментарии пользователя.
         :return None
         """
-        self.__cursor.callproc('create_result', [user_id, test_id, answer_id, time_start, time_finish, comment_user])
+        self.__cursor.callproc('create_result', [user_id, test_id, answer_id, time_start,
+                                                 time_finish, comment_user, verified])
         return
 
     def create_question(self, type_quest, question,
