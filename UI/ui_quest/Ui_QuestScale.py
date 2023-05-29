@@ -118,6 +118,8 @@ class Ui_QuestScale(object):
                                                     "            }")
         self.answer_horizontal_slider.setOrientation(QtCore.Qt.Horizontal)
         self.answer_horizontal_slider.setObjectName("answer_horizontal_slider")
+        self.answer_horizontal_slider.setPageStep(1)
+        self.answer_horizontal_slider.setRange(0, 10)
         self.verticalLayout.addWidget(self.answer_horizontal_slider)
         spacerItem12 = QtWidgets.QSpacerItem(20, 301, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem12)
