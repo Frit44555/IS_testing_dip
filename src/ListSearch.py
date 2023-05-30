@@ -16,9 +16,12 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__main_window = main_window
         self.__db = data_base
         self.__group_user = group_user
+        self.__user_id = user_id
+        self.__assigned_tests = None
         self.__working_data_on_tests = None
         self.__working_data_on_lessons = None
         self.__test_id = None
+        self.__appointment_test_id = None
         self.__lesson_id = None
         self.result_user = None
         # ________________________________
@@ -26,6 +29,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         # Функции________________________________
         self.__fill_tables()
         self.__set_action()
+        self.__fill_appointment_test_list()
         # ________________________________
 
         # Опции________________________________
@@ -34,23 +38,29 @@ class ListSearch(QWidget, Ui_ListSearch):
         # ________________________________
 
         # Объекты________________________________
-        self.result_user = ResultUser(parent=self, data_base=self.__db, user_id=user_id)
+        self.result_user = ResultUser(parent=self, data=self.__db.get_results_user(user_id), data_base=self.__db)
         self.verticalLayout_3.addWidget(self.result_user)
         spacerItem7 = QSpacerItem(20, 383, QSizePolicy.Minimum, QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem7)
         # ________________________________
 
     def __set_action(self):
+        """
+        Устанавливает действия кнопкам
+        :return None
+        """
         self.start_lesson_push_button.clicked.connect(self.__open_lesson)
-        self.start_test_push_button.clicked.connect(self.__open_testing)
+        self.start_test_push_button.clicked.connect(lambda: self.__open_testing(1))
+        self.start_appointment_test_push_button.clicked.connect(lambda: self.__open_testing(2))
         self.test_table_widget.doubleClicked.connect(self.__get_test_id)
         self.lessons_table_widget.doubleClicked.connect(self.__get_lesson_id)
         self.refresh_result_push_button.clicked.connect(self.__refresh_result)
+        self.appointment_test_list_widget.doubleClicked.connect(self.__get_appointment_test)
 
     def __fill_tables(self):
         """
         Заполнение таблиц 'Тесты' и 'Уроки'.
-        :return:
+        :return None
         """
         # Получение рабочих данных по таблицам 'тесты' и 'уроки'
         try:
@@ -105,17 +115,73 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__lesson_id = [i[0] for i in self.__working_data_on_lessons if lesson_name in i]
         self.chose_lesson.setText(lesson_name)
 
+    def __get_appointment_test(self):
+        """
+        Получение индекса выбранного назначенного теста, и установка названия теста в лейбл.
+        :return None
+        """
+        # Item выбранного элемента
+        index = self.appointment_test_list_widget.selectedIndexes()[0]
+        # ID выбранного теста
+        self.__appointment_test_id = self.__assigned_tests[index.row()][1]
+        # Строка выбранного элемента
+        st = index.data()
+        self.chose_appointment_test.setText(st[15:st.find('|')])
+
+
     @pyqtSlot()
     def __open_lesson(self):
+        """
+        Запускает виджет изучения материала
+        :return None
+        """
         if self.__lesson_id:
             self.hide()
             self.__main_window.open_lesson(self.__lesson_id)
 
     @pyqtSlot()
-    def __open_testing(self):
-        if self.__test_id:
+    def __open_testing(self, page):
+        """
+        Запускает тестирование. Параметр показывает какой кнопкой была вызвана функция.
+        1 - со страницы тесты, 2 - со страницы назначенные тесты.
+        :param page:
+        :return None
+        """
+        if self.__test_id and page == 1:
             self.hide()
             self.__main_window.open_testing(self.__test_id[0], self.__test_id[1])
+        if self.__appointment_test_id and page == 2:
+            self.hide()
+            self.__main_window.open_testing(self.__test_id[0], self.__appointment_test_id)
 
     def __refresh_result(self):
         pass
+
+    def __fill_appointment_test_list(self):
+        """
+        Заполнение списка назначенных тестов
+        :return None
+        """
+        try:
+            self.__assigned_tests = self.__db.get_assigned_tests_for_user(self.__user_id)
+
+            for row in self.__assigned_tests:
+                elem_lest = ''
+                test = self.__db.get_name_time_type_note_on_test(row[0])
+                if test == 1:
+                    continue
+
+                elem_lest += 'Название теста: ' + test[0] + ' | '
+                elem_lest += 'Тип тестирования: ' + test[1] + ' | '
+                elem_lest += 'Кол-во вопросов: ' + str(test[2]) + ' | '
+                elem_lest += 'Время выполнения: ' + str(test[3]) + ' | '
+
+                elem_lest += 'Назначен: ' + str(row[2])[:-7] + ' | '
+                elem_lest += 'Конечный срок: ' + str(row[3]) + ' | '
+                elem_lest += 'Состояние: ' + ('Пройден' if row[4] else 'Не пройден') + ' | '
+                elem_lest += 'Кол-во попыток: ' + str(row[5]) + ' | '
+                elem_lest += 'Примечание: ' + str(row[6]) + ' | '
+
+                self.appointment_test_list_widget.addItem(elem_lest)
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
