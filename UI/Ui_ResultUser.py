@@ -16,7 +16,7 @@ class Ui_ResultUser(object):
         ResultUser.setObjectName("ResultUser")
         ResultUser.resize(744, 496)
         ResultUser.setStyleSheet("background: rgb(13, 120, 149);\n"
-"color: rgb(255, 255, 255);")
+                                 "color: rgb(255, 255, 255);")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(ResultUser)
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -30,7 +30,7 @@ class Ui_ResultUser(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.result_list_widget.sizePolicy().hasHeightForWidth())
         self.result_list_widget.setSizePolicy(sizePolicy)
-        self.result_list_widget.setMinimumSize(QtCore.QSize(425, 400))
+        self.result_list_widget.setMinimumSize(QtCore.QSize(450, 400))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.result_list_widget.setFont(font)
@@ -42,7 +42,7 @@ class Ui_ResultUser(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.show_result_push_button.sizePolicy().hasHeightForWidth())
         self.show_result_push_button.setSizePolicy(sizePolicy)
-        self.show_result_push_button.setMinimumSize(QtCore.QSize(290, 0))
+        self.show_result_push_button.setMinimumSize(QtCore.QSize(450, 0))
         font = QtGui.QFont()
         font.setPointSize(13)
         self.show_result_push_button.setFont(font)
@@ -65,3 +65,13 @@ class Ui_ResultUser(object):
         _translate = QtCore.QCoreApplication.translate
         ResultUser.setWindowTitle(_translate("ResultUser", "Form"))
         self.show_result_push_button.setText(_translate("ResultUser", "Посмотреть"))
+
+if __name__ == "__main__":
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    Form = QtWidgets.QWidget()
+    ui = Ui_ResultUser()
+    ui.setupUi(Form)
+    Form.show()
+    sys.exit(app.exec_())
