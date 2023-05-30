@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from psycopg2 import Error
 from UI.Ui_ResultUser import Ui_ResultUser
+from StatisticTestForUser import StatisticTestForUser
 
 
 class ResultUser(QWidget, Ui_ResultUser):
@@ -11,6 +12,7 @@ class ResultUser(QWidget, Ui_ResultUser):
         # Переменные________________________________
         self.__data = data
         self.__db = data_base
+        self.__statistic_test_for_user = None
         # ________________________________
 
         # Функции________________________________
@@ -35,7 +37,7 @@ class ResultUser(QWidget, Ui_ResultUser):
 
                 elem_lest += 'Номер: ' + str(row[0]) + ' | '
                 elem_lest += 'Название теста: ' + test[0] + ' | '
-                elem_lest += 'Время выполнения: ' + str(row[5] - row[4])[:-7] + ' | '
+                elem_lest += 'Выполнил: ' + str(row[5])[:-7] + ' | '
 
                 self.result_list_widget.addItem(elem_lest)
 
@@ -52,7 +54,23 @@ class ResultUser(QWidget, Ui_ResultUser):
             index = self.result_list_widget.selectedIndexes()[0]
             # Строка выбранного элемента
             st = index.data()
-            print(len(st[6:st.find('|')].strip()))
+            result_id = int(st[7:st.find('|')].strip())
+            data = self.__statistic(result_id)
+            self.__statistic_test_for_user = StatisticTestForUser(data=data, parent=self)
+            self.result_vertical_layout.addWidget(self.__statistic_test_for_user)
+
         except BaseException as error:
-            # Вызвать QMessageBox
+            # Вызвать QMessageBox!!!
             print(error)
+
+    def __statistic(self, result_id):
+        test_name = None
+        score = None
+        corrct_quest = None
+        wrong_quest = None
+        time_to_completion = None
+        middle_score = None
+
+        answer_user = self.__db.get_answers(result_id)
+
+        return test_name, score, corrct_quest, wrong_quest, time_to_completion, middle_score
