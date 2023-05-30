@@ -39,9 +39,9 @@ class ListSearch(QWidget, Ui_ListSearch):
 
         # Объекты________________________________
         self.result_user = ResultUser(parent=self, data=self.__db.get_results_user(user_id), data_base=self.__db)
-        self.verticalLayout_3.addWidget(self.result_user)
-        spacerItem7 = QSpacerItem(20, 383, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        self.verticalLayout_3.addItem(spacerItem7)
+        self.result_grid.addWidget(self.result_user)
+        # spacerItem7 = QSpacerItem(20, 383, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        # self.verticalLayout_3.addItem(spacerItem7)
         # ________________________________
 
     def __set_action(self):
@@ -101,8 +101,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         """
         row_id = self.test_table_widget.currentIndex().row()
         test_name = self.test_table_widget.item(row_id, 0).text()
-        self.__test_id = [i[0] for i in self.__working_data_on_tests if test_name in i]
-        self.__test_id.append(self.test_table_widget.item(row_id, 1).text())
+        # Данные выбранного теста, [(ID, тип)]
+        self.__test_id = [i[::4] for i in self.__working_data_on_tests if test_name in i]
         self.chose_test.setText(test_name)
 
     def __get_lesson_id(self):
@@ -122,11 +122,12 @@ class ListSearch(QWidget, Ui_ListSearch):
         """
         # Item выбранного элемента
         index = self.appointment_test_list_widget.selectedIndexes()[0]
-        # ID выбранного теста
-        self.__appointment_test_id = self.__assigned_tests[index.row()][1]
         # Строка выбранного элемента
         st = index.data()
-        self.chose_appointment_test.setText(st[15:st.find('|')])
+        test_name = st[15:st.find('|')].strip()
+        self.chose_appointment_test.setText(test_name)
+        # Данные выбранного теста, [(ID, тип)]
+        self.__appointment_test_id = [i[::4] for i in self.__working_data_on_tests if test_name in i]
 
 
     @pyqtSlot()
@@ -147,12 +148,12 @@ class ListSearch(QWidget, Ui_ListSearch):
         :param page:
         :return None
         """
-        if self.__test_id and page == 1:
+        if page == 1 and self.__test_id:
             self.hide()
-            self.__main_window.open_testing(self.__test_id[0], self.__test_id[1])
-        if self.__appointment_test_id and page == 2:
+            self.__main_window.open_testing(self.__test_id[0][0], self.__test_id[0][1])
+        elif page == 2 and self.__appointment_test_id:
             self.hide()
-            self.__main_window.open_testing(self.__test_id[0], self.__appointment_test_id)
+            self.__main_window.open_testing(self.__appointment_test_id[0][0], self.__appointment_test_id[0][1])
 
     def __refresh_result(self):
         pass
