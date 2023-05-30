@@ -89,6 +89,38 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def get_name_time_type_note_on_test(self, test_id):
+        """
+        Описание: Эта функция вернёт названия теста, время прохождения, тип, количества вопросов и примечание.
+        Принимает аргументы: ID теста.
+        Возвращает: название теста, тип теста, количество вопросов, время прохождения, примечание.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_name_time_type_note_on_test', [test_id, ])
+        result = self.__cursor.fetchone()
+        return result if result else 1
+
+    def get_results_user(self, user_id):
+        """
+        Описание: Эта функция отправляет результаты пользователя.
+        Принимает аргументы: ID пользователя.
+        Возвращает: таблицу результатов.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_results_user', [user_id, ])
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
+    def get_results_all(self):
+        """
+        Описание: Эта функция отправляет все результаты, предназначено для администратора.
+        Возвращает: таблицу результатов.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_results_all')
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
     def get_lesson(self, lesson_id):
         """
         Описание: Эта функция вернёт содержимое учебного материала.
@@ -108,6 +140,17 @@ class DataBaseQuery:
         :return list or errcode=1
         """
         self.__cursor.callproc('get_questions', [test_id, ])
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
+    def get_answers(self, result_id):
+        """
+        Описание: Эта функция вернёт все ответы по заданному результату.
+        Принимает аргументы: ID результата.
+        Возвращает: таблицу ответов.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_answers', [result_id, ])
         result = self.__cursor.fetchall()
         return result if result else 1
 
