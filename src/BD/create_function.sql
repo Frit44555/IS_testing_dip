@@ -31,11 +31,23 @@ DROP FUNCTION IF EXISTS working_data_on_tests;
 -- Функция отправки рабочих данных ПО УЧЕБНОМУ МАТЕРИАЛУ
 DROP FUNCTION IF EXISTS working_data_on_lessons;
 
+-- Функция отправки названия теста, времяни, типа, количества вопросов и примечания
+DROP FUNCTION IF EXISTS get_name_time_type_note_on_test;
+
 -- Функция отправки вопросов
 DROP FUNCTION IF EXISTS get_questions;
 
+-- Функция отправки ответов
+DROP FUNCTION IF EXISTS get_answers;
+
 -- Функция отправки содержания учебного материала
 DROP FUNCTION IF EXISTS get_lesson;
+
+-- Функция получения ВСЕХ результатов для администратора
+DROP FUNCTION IF EXISTS get_results_all;
+
+-- Функция получения результатов по пользователю
+DROP FUNCTION IF EXISTS get_results_user;
 
 -- Функция отправки списка пользователей для администратора
 DROP FUNCTION IF EXISTS get_list_users;
@@ -240,6 +252,21 @@ END
 $$
 LANGUAGE plpgsql;
 
+-- Функция отправки названия теста, времяни, типа, количества вопросов и примечания
+CREATE OR REPLACE FUNCTION get_name_time_type_note_on_test(in_test_id int)
+RETURNS TABLE(name varchar(200), type_test types_tests, quantity_of_questions int, time_to_complete int, note text) AS
+$$
+	/*
+	Описание: Эта функция вернёт названия теста, время прохождения, тип, количества вопросов и примечание
+	Принимает аргументы: ID теста
+	Возвращает: название теста, тип теста, количество вопросов, время прохождения, примечание
+	*/
+	SELECT tests.name, tests.type_test, tests.quantity_of_questions, tests.time_to_complete, tests.note
+	FROM tests
+	WHERE tests.tag_id = in_test_id;
+$$
+LANGUAGE SQL;
+
 -- Функция отправки рабочих данных ПО УЧЕБНОМУ МАТЕРИАЛУ
 CREATE OR REPLACE FUNCTION working_data_on_lessons(in_group_user int)
 RETURNS TABLE(lesson_id int, name varchar(200)) AS
@@ -299,6 +326,29 @@ BEGIN
 	RETURN QUERY
 	SELECT * FROM questions
 	WHERE questions.quest_id = ANY(quantity_of_quest);
+END
+$$
+LANGUAGE plpgsql;
+
+-- Функция отправки ответов
+CREATE OR REPLACE FUNCTION get_answers(in_result_id int)
+RETURNS SETOF answers AS
+$$
+	/*
+	Описание: Эта функция вернёт все ответы по заданному результату
+	Принимает аргументы: ID результата
+	Возвращает: таблицу ответов
+	*/
+DECLARE
+	quantity_of_quest int[];
+BEGIN
+	SELECT results.answer_id INTO quantity_of_quest
+	FROM results
+	WHERE results.result_id = in_result_id;
+	
+	RETURN QUERY
+	SELECT * FROM answers
+	WHERE answers.answer_id = ANY(quantity_of_quest);
 END
 $$
 LANGUAGE plpgsql;
@@ -367,7 +417,35 @@ $$
 	Возвращает: таблицу тегов
 	*/
 	SELECT *
-	FROM tags
+	FROM tags;
+$$
+LANGUAGE SQL;
+
+-- Функция получения результатов по пользователю
+CREATE OR REPLACE FUNCTION get_results_user(in_user_id int)
+RETURNS SETOF results AS
+$$
+	/*
+	Описание: Эта функция отправляет результаты пользователя.
+	Принимает аргументы: ID пользователя
+	Возвращает: таблицу результатов
+	*/
+	SELECT *
+	FROM results
+	WHERE results.user_id = in_user_id;
+$$
+LANGUAGE SQL;
+
+-- Функция получения ВСЕХ результатов
+CREATE OR REPLACE FUNCTION get_results_all()
+RETURNS SETOF results AS
+$$
+	/*
+	Описание: Эта функция отправляет все результаты, предназначено для администратора.
+	Возвращает: таблицу результатов
+	*/
+	SELECT *
+	FROM results;
 $$
 LANGUAGE SQL;
 
