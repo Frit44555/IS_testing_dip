@@ -31,6 +31,9 @@ DROP FUNCTION IF EXISTS working_data_on_tests;
 -- Функция отправки рабочих данных ПО УЧЕБНОМУ МАТЕРИАЛУ
 DROP FUNCTION IF EXISTS working_data_on_lessons;
 
+--Функция возвращающая все баллы по тесту
+DROP FUNCTION IF EXISTS return_bals_on_test;
+
 -- Функция отправки названия теста, времяни, типа, количества вопросов и примечания
 DROP FUNCTION IF EXISTS get_name_time_type_note_on_test;
 
@@ -251,6 +254,42 @@ BEGIN
 END
 $$
 LANGUAGE plpgsql;
+
+--Функция возвращающая все баллы по тесту
+CREATE OR REPLACE FUNCTION return_bals_on_test(in_test_id int)
+RETURNS SETOF int AS
+$$
+	/*
+	Описание: Возвращяет все когда либо полученные баллы всеми пользователями по тесту.
+	Принимает аргументы: ID теста
+	Возвращает: таблицу баллов
+	*/
+DECLARE
+	--запись которая будет содержать ID задания и верность ответа на него
+	answer_bals record;
+	--полученный балл за задание
+	bal int;
+BEGIN
+	-- для кажждой записи в ответах ДЛЯ 1 ТЕСТА
+	FOR answer_bals IN SELECT quest_id, correct FROM answers
+					JOIN results on answers.answer_id = ANY(results.answer_id)
+					WHERE results.test_id = in_test_id
+	LOOP
+		--если ответ был верным
+		IF answer_bals.correct THEN
+			--достать балл за это задание
+			SELECT bals INTO bal
+			FROM questions
+			WHERE questions.quest_id = answer_bals.quest_id;
+		ELSE
+			--иначе задание проваленно
+			bal := 0;
+		END IF;
+		--вернуть балл
+		RETURN NEXT bal;
+	END LOOP;
+END;
+$$ LANGUAGE plpgsql;
 
 -- Функция отправки названия теста, времяни, типа, количества вопросов и примечания
 CREATE OR REPLACE FUNCTION get_name_time_type_note_on_test(in_test_id int)
@@ -618,4 +657,18 @@ $$
 	WHERE user_id = in_user_id;
 $$
 LANGUAGE SQL;
+--------------------------------------------
+
+
+----------------------Create view----------------------
+DROP VIEW IF EXISTS middle_bals;
+/*
+Представление содержащее средние баллы получаемые по тесту. Тип теста входит в
+представление, чтобы лишний раз не ображаться к БД из приложение.
+*/
+CREATE VIEW middle_bals AS
+SELECT tests.test_id, type_test, AVG(rbt) AS middle_bal
+FROM tests
+JOIN LATERAL return_bals_on_test(tests.test_id) AS rbt on TRUE
+GROUP BY tests.test_id;
 --------------------------------------------

@@ -164,11 +164,3 @@ CREATE TABLE results(
 	CONSTRAINT FK_results_tests FOREIGN KEY(test_id) REFERENCES tests
 );
 --------------------------------------------
-
-
-----------------------Create view----------------------
-CREATE VIEW middle_bals AS
-SELECT , AVG(questions.bals)
--- Нужен средний балл по тесту
-GROUP BY questions.bals
---------------------------------------------
