@@ -65,6 +65,30 @@ class Ui_Form(object):
         self.score_label.setObjectName("score_label")
         self.horizontalLayout_5.addWidget(self.score_label)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
+
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
+
+        self.hint_label_7 = QtWidgets.QLabel(Form)
+        self.hint_label_7.setMinimumSize(QtCore.QSize(150, 0))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.hint_label_7.setFont(font)
+        self.hint_label_7.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.hint_label_7.setObjectName("hint_label_7")
+        self.horizontalLayout_7.addWidget(self.hint_label_7)
+
+        self.score_total_label = QtWidgets.QLabel(Form)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.score_total_label.setFont(font)
+        self.score_total_label.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.score_total_label.setObjectName("score_total_label")
+        self.horizontalLayout_7.addWidget(self.score_total_label)
+
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
+
+
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.hint_label_3 = QtWidgets.QLabel(Form)
@@ -149,7 +173,9 @@ class Ui_Form(object):
         self.hint_label.setText(_translate("Form", "Название теста:"))
         self.name_test_label.setText(_translate("Form", "TextLabel"))
         self.hint_label_2.setText(_translate("Form", "Набранный балл:"))
+        self.hint_label_7.setText(_translate("Form", "Максимальный балл:"))
         self.score_label.setText(_translate("Form", "TextLabel"))
+        self.score_total_label.setText(_translate("Form", "TextLabel"))
         self.hint_label_3.setText(_translate("Form", "Правильных заданий:"))
         self.right_quest_label.setText(_translate("Form", "TextLabel"))
         self.hint_label_4.setText(_translate("Form", "Ошибочных заданий:"))
