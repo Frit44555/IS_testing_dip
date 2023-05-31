@@ -66,11 +66,11 @@ class ResultUser(QWidget, Ui_ResultUser):
     def __statistic(self, result_id):
         test_name = None
         score = None
-        corrct_quest = None
+        correct_quest = None
         wrong_quest = None
         time_to_completion = None
         middle_score = None
 
         answer_user = self.__db.get_answers(result_id)
 
-        return test_name, score, corrct_quest, wrong_quest, time_to_completion, middle_score
+        return test_name, score, correct_quest, wrong_quest, time_to_completion, middle_score
