@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSlot
 import Words as wrd
 from psycopg2 import Error
 import datetime
+import random
 
 # My widgets
 from UI.Ui_Testing import Ui_Testing
@@ -11,7 +12,7 @@ from quest.QuestManyAnswers import QuestManyAnswers
 
 
 class Testing(QWidget, Ui_Testing):
-    def __init__(self, user_id, test_id, questions, data_base, type_testing, parent=None):
+    def __init__(self, user_id, test_id, questions, data_base, type_testing, quantity, time, parent=None):
         super().__init__(parent)
         self.setupUi(self)
 
@@ -20,7 +21,8 @@ class Testing(QWidget, Ui_Testing):
         # Типы тестов: 'SCALE', 'FREE RESPONSE', 'MIXED', 'PREDEFINED'
         self.__type_testing = type_testing
         self.__test = test_id
-        print()
+        self.__quantity = quantity
+        self.__time = time  # в минутах
         self.__db = data_base
         self.__answers = []
         self.__time_start = datetime.datetime.now()
@@ -29,6 +31,7 @@ class Testing(QWidget, Ui_Testing):
         # ответ1, ответ2, ответ3, ответ4, правильный ответ.
         # Типы вопросов: 'ONE ANSWER', 'MANY ANSWERS', 'SCALE', 'FREE RESPONSE'
         self.__questions = questions
+        random.shuffle(self.__questions)
         # ________________________________
 
         # Функции________________________________
@@ -64,9 +67,8 @@ class Testing(QWidget, Ui_Testing):
         :param test:
         :return None
         """
-        how_mush_quest = len(self.__questions)
         # Заполнение вкладок TadWidget заданиями
-        for i in range(how_mush_quest):
+        for i in range(self.__quantity):
             # Текущий индекс виджета
             index = self.questions_tab_widget.count()
             # виджет который добавиться на вкладку
@@ -150,7 +152,8 @@ class Testing(QWidget, Ui_Testing):
                 # Запись и получение ID ответов
                 temp_answer_id = []
                 for i in range(len(self.__answers)):
-                    id_answer = self.__db.create_answer(self.__answers[i][0], self.__answers[i][1], self.__answers[i][2])
+                    id_answer = self.__db.create_answer(self.__answers[i][0], self.__answers[i][1],
+                                                        self.__answers[i][2])
                     if id_answer == 1:
                         return 1
                     else:
