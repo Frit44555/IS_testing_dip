@@ -683,7 +683,7 @@ LANGUAGE SQL;
 представление, чтобы лишний раз не ображаться к БД из приложение.
 */
 CREATE VIEW middle_bals AS
-SELECT tests.test_id, type_test, AVG(rbt) AS middle_bal
+SELECT tests.test_id, type_test, (SUM(rbt) / (COUNT(rbt)/tests.quantity_of_questions))::float8 AS middle_bal
 FROM tests
 JOIN LATERAL return_bals_on_test(tests.test_id) AS rbt on TRUE
 GROUP BY tests.test_id;
