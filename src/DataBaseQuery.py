@@ -185,6 +185,27 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def get_middle_bals_all(self):
+        """
+        Описание: Эта функция отправляет все средние баллы по тестам
+        Возвращает: представление middle_bals
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_middle_bals_all')
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
+    def get_middle_bals_on_test(self, test_id):
+        """
+        Описание: Эта функция отправляет средниЙ балл по тесту
+        Принимает аргументы: ID теста
+        Возвращает: представление middle_bals
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_middle_bals_on_test', [test_id, ])
+        result = self.__cursor.fetchone()
+        return result if result else 1
+
     def get_assigned_tests_for_user(self, user_id):
         """
         Описание: Эта функция отправляет данные о назначенных тестах по конкретному пользователю.

@@ -99,6 +99,23 @@ DROP FUNCTION IF EXISTS get_assigned_tests_for_user;
 --------------------------------------------
 
 
+----------------------Create VIEW----------------------
+/*
+Представление содержащее средние баллы получаемые по тесту. Тип теста входит в
+представление, чтобы лишний раз не отображать к БД из приложение.
+*/
+DROP VIEW IF EXISTS middle_bals;
+
+----------------------Create function for VIEW----------------------
+-- Функция получения среднего балла из представления
+DROP FUNCTION IF EXISTS get_middle_bals_all;
+
+-- Функция получения среднего балла из представления по тесту
+DROP FUNCTION IF EXISTS get_middle_bals_on_test;
+--------------------------------------------
+
+
+
 ----------------------Create functions----------------------
 -- Функция поиска администратора
 CREATE OR REPLACE FUNCTION find_admin(in_login text, in_password text)
@@ -661,7 +678,6 @@ LANGUAGE SQL;
 
 
 ----------------------Create view----------------------
-DROP VIEW IF EXISTS middle_bals;
 /*
 Представление содержащее средние баллы получаемые по тесту. Тип теста входит в
 представление, чтобы лишний раз не ображаться к БД из приложение.
@@ -671,4 +687,35 @@ SELECT tests.test_id, type_test, AVG(rbt) AS middle_bal
 FROM tests
 JOIN LATERAL return_bals_on_test(tests.test_id) AS rbt on TRUE
 GROUP BY tests.test_id;
+--------------------------------------------
+
+
+----------------------Create function for view----------------------
+-- Функция получения среднего балла из представления
+CREATE OR REPLACE FUNCTION get_middle_bals_all()
+RETURNS SETOF middle_bals AS
+$$
+	/*
+	Описание: Эта функция отправляет все средние баллы по тестам
+	Возвращает: представление middle_bals
+	*/
+	SELECT *
+	FROM middle_bals;
+$$
+LANGUAGE SQL;
+
+-- Функция получения среднего балла из представления по тесту
+CREATE OR REPLACE FUNCTION get_middle_bals_on_test(in_test_id int)
+RETURNS SETOF middle_bals AS
+$$
+	/*
+	Описание: Эта функция отправляет средниЙ балл по тесту
+	Принимает аргументы: ID теста
+	Возвращает: представление middle_bals
+	*/
+	SELECT *
+	FROM middle_bals
+	WHERE test_id = in_test_id;
+$$
+LANGUAGE SQL;
 --------------------------------------------
