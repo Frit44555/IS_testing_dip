@@ -150,10 +150,24 @@ class ListSearch(QWidget, Ui_ListSearch):
         """
         if page == 1 and self.__test_id:
             self.hide()
-            self.__main_window.open_testing(self.__test_id[0][0], self.__test_id[0][1])
+            # Поиск количества заданий в тесте и время выполнения
+            quantity_ant_time = [row[5:7] for row in self.__working_data_on_tests if row[0] == self.__test_id[0][0]]
+
+            self.__main_window.open_testing(test_id=self.__test_id[0][0],
+                                            type_testing=self.__test_id[0][1],
+                                            quantity=quantity_ant_time[0][0],
+                                            time=quantity_ant_time[0][1])
         elif page == 2 and self.__appointment_test_id:
             self.hide()
-            self.__main_window.open_testing(self.__appointment_test_id[0][0], self.__appointment_test_id[0][1])
+            # Поиск количества заданий в тесте и время выполнения
+            quantity_ant_time = [row[5:7] for row in self.__working_data_on_tests if row[0] ==
+                                 self.__appointment_test_id[0][0]
+                                 ]
+
+            self.__main_window.open_testing(test_id=self.__appointment_test_id[0][0],
+                                            type_testing=self.__appointment_test_id[0][1],
+                                            quantity=quantity_ant_time[0][0],
+                                            time=quantity_ant_time[0][1])
 
     def __refresh_result(self):
         pass
