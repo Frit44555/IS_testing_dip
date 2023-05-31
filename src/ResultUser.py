@@ -54,23 +54,60 @@ class ResultUser(QWidget, Ui_ResultUser):
             index = self.result_list_widget.selectedIndexes()[0]
             # Строка выбранного элемента
             st = index.data()
-            result_id = int(st[7:st.find('|')].strip())
-            data = self.__statistic(result_id)
-            self.__statistic_test_for_user = StatisticTestForUser(data=data, parent=self)
-            self.result_vertical_layout.addWidget(self.__statistic_test_for_user)
+            one_separator = st.find('|')
+            result_id = int(st[7: one_separator].strip())
+            test_name = st[one_separator+17: st.find('|', one_separator+1)].strip()
+            data = self.__statistic(result_id, test_name)
+
+            if not self.__statistic_test_for_user:
+                self.__statistic_test_for_user = StatisticTestForUser(data=data, parent=self)
+                self.result_vertical_layout.addWidget(self.__statistic_test_for_user)
+            else:
+                self.__statistic_test_for_user.setParent(None)
+                self.__statistic_test_for_user = None
+                self.__statistic_test_for_user = StatisticTestForUser(data=data, parent=self)
+                self.result_vertical_layout.addWidget(self.__statistic_test_for_user)
 
         except BaseException as error:
             # Вызвать QMessageBox!!!
             print(error)
 
-    def __statistic(self, result_id):
-        test_name = None
-        score = None
-        correct_quest = None
-        wrong_quest = None
-        time_to_completion = None
+    def __statistic(self, result_id, test_name):
+        score = 0
+        score_total = 0
+        correct_quest = 0
+        wrong_quest = 0
         middle_score = None
 
-        answer_user = self.__db.get_answers(result_id)
+        test_id_time_to_completion = [(row[2], row[4], row[5]) for row in self.__data if result_id in row]
 
-        return test_name, score, correct_quest, wrong_quest, time_to_completion, middle_score
+        time_to_completion = str(test_id_time_to_completion[0][2] - test_id_time_to_completion[0][1])[:-7]
+
+        try:
+            answer_user = self.__db.get_answers(result_id)
+            questions = self.__db.get_questions(test_id_time_to_completion[0][0])
+            middle_score = self.__db.get_middle_bals_on_test(test_id_time_to_completion[0][0])
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
+        for answer in answer_user:
+            for quest in questions:
+                # Задание верно
+                if answer[3] and answer[1] == quest[0]:
+                    score += quest[2]
+                    correct_quest += 1
+                    break
+                # не верно, при этом это одно и то же задания, а не все попавшие в иначе
+                elif answer[1] == quest[0]:
+                    score_total += quest[2]
+                    wrong_quest += 1
+
+        score_total += score
+
+        # print('время', time_to_completion, "ответы", answer_user, "вопросы", questions, "средний балл", middle_score, sep='\n')
+        # print('СТАТИСТИКА', 'БАЛЛ =', score, "/", score_total, "Правильных заданий", correct_quest, "Ошибочных заданий", wrong_quest,
+        #       " ВРЕМЯ =", time_to_completion, "Средний =",
+        #       str(round(middle_score[2], 2)))
+
+        return test_name, str(score), str(score_total), str(correct_quest), str(wrong_quest),\
+            time_to_completion, str(round(middle_score[2], 2))
