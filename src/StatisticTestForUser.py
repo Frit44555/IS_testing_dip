@@ -7,9 +7,12 @@ class StatisticTestForUser(QWidget, Ui_Form):
         super().__init__(parent)
         self.setupUi(self)
 
-        # Функции________________________________
-        self.__fill_data(data)
+        # Заполнение полей________________________________
+        self.name_test_label.setText(data[0])
+        self.score_label.setText(data[1])
+        self.score_total_label.setText(data[2])
+        self.right_quest_label.setText(data[3])
+        self.wrong_quest_label.setText(data[4])
+        self.time_label.setText(data[5])
+        self.middle_score_label.setText(data[6])
         # ________________________________
-
-    def __fill_data(self, data):
-        pass

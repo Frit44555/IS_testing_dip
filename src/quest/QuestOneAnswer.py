@@ -34,6 +34,14 @@ class QuestOneAnswer(QWidget, Ui_QuestOneAnswer):
         :return None
         """
         self.confirm_push_button.clicked.connect(self.__answered)
+        self.answer1_radio_button.clicked.connect(self.__unanswered)
+        self.answer2_radio_button.clicked.connect(self.__unanswered)
+        self.answer3_radio_button.clicked.connect(self.__unanswered)
+        self.answer4_radio_button.clicked.connect(self.__unanswered)
+
+    @pyqtSlot()
+    def __unanswered(self):
+        self.__status_answer_widget.unanswered()
 
     @pyqtSlot()
     def __answered(self):

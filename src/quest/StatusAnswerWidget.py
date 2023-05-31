@@ -8,4 +8,7 @@ class StatusAnswerWidget(QWidget, Ui_Form):
         self.setupUi(self)
 
     def answered(self):
-        self.widget.setStyleSheet('background-color: rgb(43, 255, 67); border-radius: 14px;')
+        self.widget.setStyleSheet('background-color: #fff013; border-radius: 14px;')
+
+    def unanswered(self):
+        self.widget.setStyleSheet('background-color: rgb(255, 0, 0); border-radius: 14px;')
