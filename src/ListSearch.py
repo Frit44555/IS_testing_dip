@@ -1,7 +1,8 @@
 from UI.Ui_ListSearch import Ui_ListSearch
-from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView
 from PyQt5.QtCore import pyqtSlot
 from psycopg2 import Error
+from datetime import datetime
 
 # My widgets
 from ResultUser import ResultUser
@@ -179,13 +180,19 @@ class ListSearch(QWidget, Ui_ListSearch):
         """
         try:
             self.__assigned_tests = self.__db.get_assigned_tests_for_user(self.__user_id)
+            # Текущее время
+            now = datetime.now()
 
             for row in self.__assigned_tests:
-                elem_lest = ''
+                # если deadline прошёл
+                if row[3] < now:
+                    continue
+
                 test = self.__db.get_name_time_type_note_on_test(row[0])
                 if test == 1:
                     continue
 
+                elem_lest = ''
                 elem_lest += 'Название теста: ' + test[0] + ' | '
                 elem_lest += 'Тип тестирования: ' + test[1] + ' | '
                 elem_lest += 'Кол-во вопросов: ' + str(test[2]) + ' | '
