@@ -199,6 +199,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Выключение кнопок "Выйти" и "Обновить"
         self.exit_push_button.setEnabled(False)
         self.refresh_push_button.setEnabled(False)
+        self.to_main_push_button.setEnabled(False)
 
         try:
             questions = self.__db.get_questions(test_id)
@@ -209,3 +210,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                  user_id=self.__user[0], type_testing=type_testing, quantity=quantity,
                                  time=time)
         self.work_vertical_layout.addWidget(self.__testing)
+
+    def close_testing(self):
+        self.exit_push_button.setEnabled(True)
+        self.refresh_push_button.setEnabled(True)
+        self.to_main_push_button.setEnabled(True)
+
+        self.__refresh_data()

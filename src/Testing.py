@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QTimer
 import Words as wrd
 from psycopg2 import Error
 import datetime
@@ -17,6 +17,7 @@ class Testing(QWidget, Ui_Testing):
         self.setupUi(self)
 
         # Переменные________________________________
+        self.__main_window = parent
         self.__user = user_id
         # Типы тестов: 'SCALE', 'FREE RESPONSE', 'MIXED', 'PREDEFINED'
         self.__type_testing = type_testing
@@ -36,6 +37,7 @@ class Testing(QWidget, Ui_Testing):
 
         # Функции________________________________
         self.__set_action()
+        self.__set_timer()
         # ________________________________
 
     def __set_action(self):
@@ -46,20 +48,45 @@ class Testing(QWidget, Ui_Testing):
         self.complete_push_button.clicked.connect(self.__close)
         self.__assembly_testing()
 
+    def __set_timer(self):
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.__show_time)
+        self.timer.setInterval(1000)  # 1 sec
+        self.time = self.__time * 60
+        self.timer.start()
+
+    def __show_time(self):
+        self.timer_label.display(self.time)
+        self.time -= 1
+        if self.time < 0:
+            self.timer.stop()
+            self.time = 0
+            self.__close(end=1)
+
     @pyqtSlot()
-    def __close(self):
+    def __close(self, end=None):
         """
         Принудительное завершение тестирования
         :return None
         """
-        qm = QMessageBox
-        reply = qm.question(self, wrd.testing['close_testing_warning'], wrd.testing['close_testing'], qm.Yes | qm.No)
-        # ответ
-        if reply == qm.Yes:
-            self.__complete_testing()
-            self.close()
+        if not end:
+            qm = QMessageBox
+            reply = qm.question(self, wrd.testing['close_testing_title'], wrd.testing['close_testing_text'],
+                                qm.Yes | qm.No)
+            # ответ
+            if reply == qm.Yes:
+                self.__complete_testing()
+                self.__main_window.close_testing()
+                self.close()
+            else:
+                return
         else:
-            return
+            qm = QMessageBox
+            qm.question(self, wrd.testing['time_over_title'], wrd.testing['time_over_text'], qm.Ok)
+            self.__complete_testing()
+            self.__main_window.close_testing()
+            self.close()
+
 
     def __assembly_testing(self):
         """
