@@ -12,7 +12,7 @@ class Ui_Lesson(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.lessons_text_browser = QtWidgets.QTextBrowser(Lesson)
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(11)
         self.lessons_text_browser.setFont(font)
         self.lessons_text_browser.setObjectName("lessons_text_browser")
         self.verticalLayout.addWidget(self.lessons_text_browser)
