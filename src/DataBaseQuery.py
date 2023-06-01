@@ -129,6 +129,29 @@ class DataBaseQuery:
         :return list or errcode=1
         """
         self.__cursor.callproc('get_lesson', [lesson_id, ])
+        result = self.__cursor.fetchone()
+        return result if result else 1
+
+    def get_lesson_via_tag(self, tag_name, group_id):
+        """
+        Описание: Эта функция вернёт ID и имя учебного материала найденного по заданному тегу и ограничителю
+                    в виде группы пользователя.
+        Принимает аргументы: ID учебного материала, ID группы.
+        Возвращает: имя тега.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_lesson_via_tag', [tag_name, group_id])
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
+    def get_test_via_teg(self, tag_name, group_id):
+        """
+        Описание: Эта функция вернёт данные тестов, по переданному тегу в соответствии с ограничением по группе.
+        Принимает аргументы: ID учебного материала, ID группы.
+        Возвращает: имя тега.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_test_via_teg', [tag_name, group_id])
         result = self.__cursor.fetchall()
         return result if result else 1
 
