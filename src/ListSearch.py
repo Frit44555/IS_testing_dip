@@ -1,8 +1,9 @@
 from UI.Ui_ListSearch import Ui_ListSearch
-from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QAbstractItemView, QMessageBox
 from PyQt5.QtCore import pyqtSlot
 from psycopg2 import Error
 from datetime import datetime
+import Words as wrd
 
 # My widgets
 from ResultUser import ResultUser
@@ -28,7 +29,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         # ________________________________
 
         # Функции________________________________
-        self.__fill_tables()
+        self.__fill_tabl_test()
+        self.__fill_tabl_lesson()
         self.__set_action()
         self.__fill_appointment_test_list()
         # ________________________________
@@ -57,20 +59,23 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.lessons_table_widget.doubleClicked.connect(self.__get_lesson_id)
         self.refresh_result_push_button.clicked.connect(self.__refresh_result)
         self.appointment_test_list_widget.doubleClicked.connect(self.__get_appointment_test)
-        self.find_test_button.clicked.connect(self.__get_name_test_from_search)
-        self.find_lesson_button.clicked.connect(self.__get_name_lesson_from_search)
+        self.find_test_button.clicked.connect(self.__find_test)
+        self.find_lesson_button.clicked.connect(self.__find_lesson)
+        self.refresh_test_button.clicked.connect(self.__refresh_table_test_search)
+        self.refresh_lesson_button.clicked.connect(self.__refresh_table_lesson_search)
 
-    def __fill_tables(self):
+
+    def __fill_tabl_test(self):
         """
-        Заполнение таблиц 'Тесты' и 'Уроки'.
+        Заполнение таблицы 'Тесты'.
         :return None
         """
         # Получение рабочих данных по таблицам 'тесты' и 'уроки'
         try:
             self.__working_data_on_tests = self.__db.working_data_on_tests(self.__group_user)
-            self.__working_data_on_lessons = self.__db.working_data_on_lessons(self.__group_user)
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
+
         # заполнение таблицы 'тесты'
         if self.__working_data_on_tests != 1:
             numcols = 4
@@ -81,7 +86,18 @@ class ListSearch(QWidget, Ui_ListSearch):
                     self.test_table_widget.setItem(row, column,
                                                    QTableWidgetItem(str(self.__working_data_on_tests[row][column + 3])))
         else:
-            return
+            return  # Добавить QMessage
+
+    def __fill_tabl_lesson(self):
+        """
+        Заполнение таблицы "Учебные материалы".
+        :return None
+        """
+        try:
+            self.__working_data_on_lessons = self.__db.working_data_on_lessons(self.__group_user)
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
         # заполнение таблицы 'уроки'
         if self.__working_data_on_lessons != 1:
             numcols = 1
@@ -95,7 +111,7 @@ class ListSearch(QWidget, Ui_ListSearch):
                                                               )
                                                       ))
         else:
-            return
+            return  # Добавить QMessage
 
     def __get_test_id(self):
         """
@@ -132,11 +148,10 @@ class ListSearch(QWidget, Ui_ListSearch):
         # Данные выбранного теста, [(ID, тип)]
         self.__appointment_test_id = [i[::4] for i in self.__working_data_on_tests if test_name in i]
 
-
     @pyqtSlot()
     def __open_lesson(self):
         """
-        Запускает виджет изучения материала
+        Запускает виджет изучения материала.
         :return None
         """
         if self.__lesson_id:
@@ -173,13 +188,16 @@ class ListSearch(QWidget, Ui_ListSearch):
                                             time=quantity_ant_time[0][1])
 
     def __refresh_result(self):
+        """
+        Метод обновления списка результатов.
+        :return None
+        """
         if self.__result_user:
             self.__result_user.setParent(None)
             self.__result_user = None
             self.__result_user = ResultUser(parent=self, data=self.__db.get_results_user(self.__user_id),
                                             data_base=self.__db)
             self.result_grid.addWidget(self.__result_user)
-
 
     def __fill_appointment_test_list(self):
         """
@@ -216,10 +234,92 @@ class ListSearch(QWidget, Ui_ListSearch):
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
-    @pyqtSlot()
     def __get_name_test_from_search(self):
-        pass
+        """
+        Метод получения ключевого слова из поисковой строки страницы "тесты".
+        :return None
+        """
+        text = self.search_on_tests_line_edit.text().strip()
+        if text:
+            return text
+        else:
+            QMessageBox.about(self, wrd.search_test['wrong_search_title'], wrd.search_test['wrong_search_text'])
+            return 1
+
+    def __get_name_lesson_from_search(self):
+        """
+        Метод получения ключевого слова из поисковой строки страницы "учебный материалы".
+        :return None
+        """
+        text = self.search_on_lessons_line_edit.text().strip()
+        if text:
+            return text
+        else:
+            QMessageBox.about(self, wrd.search_test['wrong_search_title'], wrd.search_test['wrong_search_text'])
+            return 1
 
     @pyqtSlot()
-    def __get_name_lesson_from_search(self):
-        pass
+    def __refresh_table_test_search(self):
+        """
+        Метод обновление таблицы "тесты" и очищение строки поиска.
+        :return None
+        """
+        self.search_on_tests_line_edit.setText('')
+        self.__fill_tabl_test()
+
+    @pyqtSlot()
+    def __refresh_table_lesson_search(self):
+        """
+        Метод обновление таблицы "учебные материалы" и очищение строки поиска.
+        :return None
+        """
+        self.search_on_lessons_line_edit.setText('')
+        self.__fill_tabl_lesson()
+
+    @pyqtSlot()
+    def __find_test(self):
+        """
+        Метод поиска теста в таблице тестов.
+        :return None
+        """
+        key_word = self.__get_name_test_from_search()
+        # Пользователь ничего не ввёл
+        if key_word == 1:
+            return
+
+        # Чистка таблицы
+        self.test_table_widget.clear()
+        self.test_table_widget.setRowCount(0)
+        numcols = 4  # количество столбцов в таблице
+        for row in self.__working_data_on_tests:
+            # поиск по ключевому слову
+            if key_word.lower() in row[3].lower():
+                numrows = self.test_table_widget.rowCount()
+                self.test_table_widget.setRowCount(numrows+1)
+                # заполнение таблицы
+                for j in range(numcols):
+                    self.test_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
+
+    @pyqtSlot()
+    def __find_lesson(self):
+        """
+        Метод поиска учебного материала в соответствующей таблице.
+        :return None
+        """
+        key_word = self.__get_name_lesson_from_search()
+        # Пользователь ничего не ввёл
+        if key_word == 1:
+            return
+
+        # Чистка таблицы
+        self.lessons_table_widget.clear()
+        self.lessons_table_widget.setRowCount(0)
+        numcols = 1  # количество столбцов в таблице
+        for row in self.__working_data_on_lessons:
+            # поиск по ключевому слову
+            if key_word.lower() in row[3].lower():
+                numrows = self.lessons_table_widget.rowCount()
+                self.lessons_table_widget.setRowCount(numrows + 1)
+                # заполнение таблицы
+                for j in range(numcols):
+                    self.lessons_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
