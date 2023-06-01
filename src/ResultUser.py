@@ -28,6 +28,8 @@ class ResultUser(QWidget, Ui_ResultUser):
         Заполняет список пройденных тестов.
         :return None
         """
+        if self.__data == 1:
+            return
         try:
             for row in self.__data:
                 elem_lest = ''
