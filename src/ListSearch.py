@@ -24,7 +24,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__test_id = None
         self.__appointment_test_id = None
         self.__lesson_id = None
-        self.result_user = None
+        self.__result_user = None
         # ________________________________
 
         # Функции________________________________
@@ -39,8 +39,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         # ________________________________
 
         # Объекты________________________________
-        self.result_user = ResultUser(parent=self, data=self.__db.get_results_user(user_id), data_base=self.__db)
-        self.result_grid.addWidget(self.result_user)
+        self.__result_user = ResultUser(parent=self, data=self.__db.get_results_user(user_id), data_base=self.__db)
+        self.result_grid.addWidget(self.__result_user)
         # spacerItem7 = QSpacerItem(20, 383, QSizePolicy.Minimum, QSizePolicy.Expanding)
         # self.verticalLayout_3.addItem(spacerItem7)
         # ________________________________
@@ -57,6 +57,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.lessons_table_widget.doubleClicked.connect(self.__get_lesson_id)
         self.refresh_result_push_button.clicked.connect(self.__refresh_result)
         self.appointment_test_list_widget.doubleClicked.connect(self.__get_appointment_test)
+        self.find_test_button.clicked.connect(self.__get_name_test_from_search)
+        self.find_lesson_button.clicked.connect(self.__get_name_lesson_from_search)
 
     def __fill_tables(self):
         """
@@ -171,7 +173,13 @@ class ListSearch(QWidget, Ui_ListSearch):
                                             time=quantity_ant_time[0][1])
 
     def __refresh_result(self):
-        pass
+        if self.__result_user:
+            self.__result_user.setParent(None)
+            self.__result_user = None
+            self.__result_user = ResultUser(parent=self, data=self.__db.get_results_user(self.__user_id),
+                                            data_base=self.__db)
+            self.result_grid.addWidget(self.__result_user)
+
 
     def __fill_appointment_test_list(self):
         """
@@ -207,3 +215,11 @@ class ListSearch(QWidget, Ui_ListSearch):
                 self.appointment_test_list_widget.addItem(elem_lest)
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
+
+    @pyqtSlot()
+    def __get_name_test_from_search(self):
+        pass
+
+    @pyqtSlot()
+    def __get_name_lesson_from_search(self):
+        pass
