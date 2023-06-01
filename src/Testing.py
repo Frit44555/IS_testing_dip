@@ -161,7 +161,7 @@ class Testing(QWidget, Ui_Testing):
             # был дан ответ и список не пуст
             for i in range(len(self.__answers)):
                 # замена уже данного ответа
-                if quest_id in self.__answers[i]:
+                if quest_id == self.__answers[i][0]:
                     self.__answers.pop(i)
                     self.__answers.insert(i, (quest_id, answer, correct))
                     break
