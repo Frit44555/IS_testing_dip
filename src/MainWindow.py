@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtCore import pyqtSlot
 from UI.Ui_MainWindow import Ui_MainWindow
 import Words as wrd
-
+from psycopg2 import Error
 # My widgets
 from Authentication import Authentication
 from ListSearch import ListSearch
@@ -186,9 +186,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Выключение кнопок "Выйти" и "Обновить"
         self.exit_push_button.setEnabled(False)
         self.refresh_push_button.setEnabled(False)
-
-        self.__lesson = Lesson(data_base=self.__db, lesson_id=lesson_id, parent=self)
-        self.work_vertical_layout.addWidget(self.__lesson)
+        try:
+            self.__lesson = Lesson(text=self.__db.get_lesson(lesson_id)[0], parent=self)
+            self.work_vertical_layout.addWidget(self.__lesson)
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
 
     def open_testing(self, test_id, type_testing, quantity, time):
         """
