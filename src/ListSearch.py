@@ -26,6 +26,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__appointment_test_id = None
         self.__lesson_id = None
         self.__result_user = None
+        self.__tags = None
         # ________________________________
 
         # Функции________________________________
@@ -64,12 +65,13 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.refresh_test_button.clicked.connect(self.__refresh_table_test_search)
         self.refresh_lesson_button.clicked.connect(self.__refresh_table_lesson_search)
 
-
     def __fill_tabl_test(self):
         """
         Заполнение таблицы 'Тесты'.
         :return None
         """
+        # Обновления тегов
+        self.__tags = self.__db.get_tags_on_group(self.__group_user)
         # Получение рабочих данных по таблицам 'тесты' и 'уроки'
         try:
             self.__working_data_on_tests = self.__db.working_data_on_tests(self.__group_user)
@@ -129,9 +131,9 @@ class ListSearch(QWidget, Ui_ListSearch):
         Получение индекса выделенной строки, получение ID учебного материала, установка названия выбранного материала.
         :return None
         """
-        row_id = self.test_table_widget.currentIndex().row()
-        lesson_name = self.test_table_widget.item(row_id, 0).text()
-        self.__lesson_id = [i[0] for i in self.__working_data_on_lessons if lesson_name in i]
+        row_id = self.lessons_table_widget.currentIndex().row()
+        lesson_name = self.lessons_table_widget.item(row_id, 0).text()
+        self.__lesson_id = [i[0] for i in self.__working_data_on_lessons if lesson_name in i][0]
         self.chose_lesson.setText(lesson_name)
 
     def __get_appointment_test(self):
@@ -206,6 +208,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         """
         try:
             self.__assigned_tests = self.__db.get_assigned_tests_for_user(self.__user_id)
+            if self.__assigned_tests == 1:
+                return
             # Текущее время
             now = datetime.now()
 
@@ -287,18 +291,33 @@ class ListSearch(QWidget, Ui_ListSearch):
         if key_word == 1:
             return
 
-        # Чистка таблицы
-        self.test_table_widget.clear()
-        self.test_table_widget.setRowCount(0)
-        numcols = 4  # количество столбцов в таблице
-        for row in self.__working_data_on_tests:
-            # поиск по ключевому слову
-            if key_word.lower() in row[3].lower():
-                numrows = self.test_table_widget.rowCount()
-                self.test_table_widget.setRowCount(numrows+1)
-                # заполнение таблицы
-                for j in range(numcols):
-                    self.test_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
+        if self.change_search_on_test_combo_box.currentText() == 'Имя':
+            # Чистка таблицы
+            self.test_table_widget.clear()
+            self.test_table_widget.setRowCount(0)
+            numcols = 4  # количество столбцов в таблице
+            for row in self.__working_data_on_tests:
+                # поиск по ключевому слову
+                if key_word.lower() in row[3].lower():
+                    numrows = self.test_table_widget.rowCount()
+                    self.test_table_widget.setRowCount(numrows+1)
+                    # заполнение таблицы
+                    for j in range(numcols):
+                        self.test_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
+
+            self.test_table_widget.setHorizontalHeaderLabels(["Название", "Тип", "Вопросов", "Время"])
+
+        elif self.change_search_on_test_combo_box.currentText() == 'Тег':
+            tests = None
+            for row in self.__tags:
+                if key_word == row[1]:
+                    try:
+                        tests = self.__db.get_test_via_teg(row[1], self.__group_user)
+                    except (Exception, Error) as error:
+                        print('ERROR QUERY:', error)
+            if tests == 1:
+                return
+            print(tests)
 
     @pyqtSlot()
     def __find_lesson(self):
@@ -311,15 +330,30 @@ class ListSearch(QWidget, Ui_ListSearch):
         if key_word == 1:
             return
 
-        # Чистка таблицы
-        self.lessons_table_widget.clear()
-        self.lessons_table_widget.setRowCount(0)
-        numcols = 1  # количество столбцов в таблице
-        for row in self.__working_data_on_lessons:
-            # поиск по ключевому слову
-            if key_word.lower() in row[3].lower():
-                numrows = self.lessons_table_widget.rowCount()
-                self.lessons_table_widget.setRowCount(numrows + 1)
-                # заполнение таблицы
-                for j in range(numcols):
-                    self.lessons_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
+        if self.change_search_on_lesson_combo.currentText() == 'Имя':
+            # Чистка таблицы
+            self.lessons_table_widget.clear()
+            self.lessons_table_widget.setRowCount(0)
+            numcols = 1  # количество столбцов в таблице
+            for row in self.__working_data_on_lessons:
+                # поиск по ключевому слову
+                if key_word.lower() in row[1].lower():
+                    numrows = self.lessons_table_widget.rowCount()
+                    self.lessons_table_widget.setRowCount(numrows + 1)
+                    # заполнение таблицы
+                    for j in range(numcols):
+                        self.lessons_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 1])))
+
+            self.lessons_table_widget.setHorizontalHeaderLabels(["Название", ])
+
+        elif self.change_search_on_lesson_combo.currentText() == 'Тег':
+            tests = None
+            for row in self.__tags:
+                if key_word == row[1]:
+                    try:
+                        tests = self.__db.get_lesson_via_tag(row[1], self.__group_user)
+                    except (Exception, Error) as error:
+                        print('ERROR QUERY:', error)
+            if tests == 1:
+                return
+            print(tests)
