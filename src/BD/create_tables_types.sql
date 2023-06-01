@@ -78,8 +78,8 @@ CREATE TABLE groups_users(
 --Name: lessons, type: TABLE
 CREATE TABLE lessons(
 	lesson_id int GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) NOT NULL,
-	tag_id int NOT NULL,
-	name varchar(200) NOT NULL,
+	tag_id int DEFAULT 1 NOT NULL,
+	name varchar(200) UNIQUE NOT NULL,
 	content text NOT NULL,
 	
 	CONSTRAINT PK_lessons_lesson_id PRIMARY KEY(lesson_id),
