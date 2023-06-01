@@ -31,9 +31,6 @@ DROP FUNCTION IF EXISTS working_data_on_tests;
 -- Функция отправки рабочих данных ПО УЧЕБНОМУ МАТЕРИАЛУ
 DROP FUNCTION IF EXISTS working_data_on_lessons;
 
---Функция возвращающая все баллы по тесту
-DROP FUNCTION IF EXISTS return_bals_on_test;
-
 -- Функция отправки названия теста, времяни, типа, количества вопросов и примечания
 DROP FUNCTION IF EXISTS get_name_time_type_note_on_test;
 
@@ -45,6 +42,12 @@ DROP FUNCTION IF EXISTS get_answers;
 
 -- Функция отправки содержания учебного материала
 DROP FUNCTION IF EXISTS get_lesson;
+
+-- Функция отправки ID и имени учебного материала через тег и группу
+DROP FUNCTION IF EXISTS get_lesson_via_tag;
+
+--Функция получения теста через тег и группу пользователя
+DROP FUNCTION IF EXISTS get_test_via_teg;
 
 -- Функция получения ВСЕХ результатов для администратора
 DROP FUNCTION IF EXISTS get_results_all;
@@ -104,9 +107,12 @@ DROP FUNCTION IF EXISTS get_assigned_tests_for_user;
 Представление содержащее средние баллы получаемые по тесту. Тип теста входит в
 представление, чтобы лишний раз не отображать к БД из приложение.
 */
-DROP VIEW IF EXISTS middle_bals;
+DROP VIEW IF EXISTS middle_bals CASCADE;
 
 ----------------------Create function for VIEW----------------------
+--Функция возвращающая все баллы по тесту
+DROP FUNCTION IF EXISTS return_bals_on_test;
+
 -- Функция получения среднего балла из представления
 DROP FUNCTION IF EXISTS get_middle_bals_all;
 
@@ -272,6 +278,36 @@ END
 $$
 LANGUAGE plpgsql;
 
+--Функция получения теста через тег и группу пользователя
+CREATE OR REPLACE FUNCTION get_test_via_teg(in_tag_name varchar(100), in_group_user int)
+RETURNS TABLE(test_id int, quest_id int[], tag_id int, name varchar(200), type_test types_tests,
+			  quantity_of_questions int, time_to_complete int, note text) AS
+$$
+	/*
+	Описание: Эта функция вернёт данные тестов, по переданному тегу в соответствии с ограничением по группе.
+	Принимает аргументы: имя тега, ID группы пользователя
+	Возвращает: ID теста, массив ID вопросов, ID тега, название теста, тип теста
+				количество вопросов, время прохождения, примечание
+	*/
+DECLARE
+	available int[];
+BEGIN
+	SELECT groups_users.available_tags INTO available
+	FROM groups_users
+	WHERE groups_users.group_id = in_group_user;
+	
+	RETURN QUERY
+	SELECT tests.test_id, tests.quest_id, tests.tag_id, tests.name, tests.type_test,
+			tests.quantity_of_questions, tests.time_to_complete, tests.note
+	FROM tests
+	JOIN tags USING(tag_id)
+	WHERE tests.tag_id = ANY(available)
+		AND tags.name = in_tag_name
+		AND tests.tag_id = tags.tag_id;
+END
+$$
+LANGUAGE plpgsql;
+
 --Функция возвращающая все баллы по тесту
 CREATE OR REPLACE FUNCTION return_bals_on_test(in_test_id int)
 RETURNS SETOF int AS
@@ -362,6 +398,34 @@ $$
 	WHERE lessons.lesson_id = in_lesson;
 $$
 LANGUAGE SQL;
+
+-- Функция отправки ID и имени учебного материала через тег и группу
+CREATE OR REPLACE FUNCTION get_lesson_via_tag(in_tag_name varchar(100), in_group_user int)
+RETURNS TABLE(lesson_id int, name varchar(200)) AS
+$$
+	/*
+	Описание: Эта функция вернёт ID и имя учебного материала найденного по заданному тегу и ограничителю в виде группы пользователя.
+	Принимает аргументы: имя тега, ID группы.
+	Возвращает: текст
+	*/
+DECLARE
+	available int[];
+BEGIN
+	-- Доступные теги для группы пользователей 
+	SELECT groups_users.available_tags INTO available
+	FROM groups_users
+	WHERE groups_users.group_id = in_group_user;
+	
+	RETURN QUERY
+	SELECT lessons.lesson_id, lessons.name
+	FROM lessons
+	JOIN tags USING(tag_id)
+	WHERE lessons.tag_id = ANY(available)
+			AND tags.name = in_tag_name
+			AND tags.tag_id = lessons.tag_id;
+END;
+$$
+LANGUAGE plpgsql;
 
 -- Функция отправки вопросов
 CREATE OR REPLACE FUNCTION get_questions(in_test int)
@@ -603,15 +667,15 @@ $$
 LANGUAGE SQL;
 
 -- Функция создания учебного материала
-CREATE OR REPLACE FUNCTION create_lesson(in_name varchar(200), in_content text)
+CREATE OR REPLACE FUNCTION create_lesson(in_name varchar(200), in_content text, in_tag_id int DEFAULT 1)
 RETURNS void AS
 $$
 	/*
 	Описание: Эта функция создаёт запись в таблице "lessons"
 	Принимает аргументы: название, содержимое
 	*/
-	INSERT INTO lessons(name, content)
-	VALUES(in_name, in_content);
+	INSERT INTO lessons(tag_id, name, content)
+	VALUES(in_tag_id, in_name, in_content);
 $$
 LANGUAGE SQL;
 
