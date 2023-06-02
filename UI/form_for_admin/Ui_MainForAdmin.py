@@ -17,28 +17,28 @@ class Ui_MainForAdmin(object):
         MainForAdmin.resize(853, 485)
         MainForAdmin.setMinimumSize(QtCore.QSize(630, 0))
         MainForAdmin.setStyleSheet("color: rgb(255, 255, 255); background-color: rgb(13, 130, 149);")
-        self.verticalLayout = QtWidgets.QVBoxLayout(MainForAdmin)
-        self.verticalLayout.setContentsMargins(1, 1, 1, 1)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName("verticalLayout")
+        self.vertical_layout_tab_user = QtWidgets.QVBoxLayout(MainForAdmin)
+        self.vertical_layout_tab_user.setContentsMargins(1, 1, 1, 1)
+        self.vertical_layout_tab_user.setSpacing(0)
+        self.vertical_layout_tab_user.setObjectName("vertical_layout_tab_user")
         self.tabWidget = QtWidgets.QTabWidget(MainForAdmin)
         font = QtGui.QFont()
         font.setPointSize(11)
         self.tabWidget.setFont(font)
         self.tabWidget.setStyleSheet("QTabWidget::pane\n"
-"{\n"
-"    border:1px;\n"
-"    background: rgb(203, 122, 9);\n"
-"}\n"
-"QTabBar::tab\n"
-"{\n"
-"    color: white;\n"
-"    background: rgb(13, 120, 149);\n"
-"    min-width: 25ex;\n"
-"    min-height: 8ex;\n"
-"}\n"
-"QTabBar::tab::selected { background: rgb(213, 122, 9); }\n"
-"QTabBar::tab::hover { background: rgb(203, 112, 9); }")
+                                     "{\n"
+                                     "    border:1px;\n"
+                                     "    background: rgb(203, 122, 9);\n"
+                                     "}\n"
+                                     "QTabBar::tab\n"
+                                     "{\n"
+                                     "    color: white;\n"
+                                     "    background: rgb(13, 120, 149);\n"
+                                     "    min-width: 25ex;\n"
+                                     "    min-height: 8ex;\n"
+                                     "}\n"
+                                     "QTabBar::tab::selected { background: rgb(213, 122, 9); }\n"
+                                     "QTabBar::tab::hover { background: rgb(203, 112, 9); }")
         self.tabWidget.setObjectName("tabWidget")
         self.tab_user = QtWidgets.QWidget()
         self.tab_user.setObjectName("tab_user")
@@ -46,16 +46,51 @@ class Ui_MainForAdmin(object):
         self.tab_analysis = QtWidgets.QWidget()
         self.tab_analysis.setObjectName("tab_analysis")
         self.tabWidget.addTab(self.tab_analysis, "")
-        self.tab_creat_test = QtWidgets.QWidget()
-        self.tab_creat_test.setObjectName("tab_creat_test")
-        self.tabWidget.addTab(self.tab_creat_test, "")
+        self.tab_create_test = QtWidgets.QWidget()
+        self.tab_create_test.setObjectName("tab_create_test")
+        self.tabWidget.addTab(self.tab_create_test, "")
         self.tab_create_lesson = QtWidgets.QWidget()
         self.tab_create_lesson.setObjectName("tab_create_lesson")
         self.tabWidget.addTab(self.tab_create_lesson, "")
         self.tab_check = QtWidgets.QWidget()
         self.tab_check.setObjectName("tab_check")
         self.tabWidget.addTab(self.tab_check, "")
-        self.verticalLayout.addWidget(self.tabWidget)
+        self.vertical_layout_tab_user.addWidget(self.tabWidget)
+
+        self.vertical_layout_tab_check = QtWidgets.QVBoxLayout(self.tab_check)
+        self.vertical_layout_tab_check.setObjectName("vertical_layout_tab_check")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.label = QtWidgets.QLabel(self.tab_check)
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label.setFont(font)
+        self.label.setObjectName("label")
+        self.horizontalLayout_9.addWidget(self.label)
+        self.chech_user_combo_box = QtWidgets.QComboBox(self.tab_check)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.chech_user_combo_box.setFont(font)
+        self.chech_user_combo_box.setObjectName("chech_user_combo_box")
+        self.horizontalLayout_9.addWidget(self.chech_user_combo_box)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_9)
+        self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
+        self.start_check_push_button = QtWidgets.QPushButton(self.tab_check)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.start_check_push_button.setFont(font)
+        self.start_check_push_button.setStyleSheet("background-color: rgb(213, 122, 9);")
+        self.start_check_push_button.setObjectName("start_check_push_button")
+        self.horizontalLayout_10.addWidget(self.start_check_push_button)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_10.addItem(spacerItem1)
+        self.verticalLayout_6.addLayout(self.horizontalLayout_10)
+        self.vertical_layout_tab_check.addLayout(self.verticalLayout_6)
 
         self.retranslateUi(MainForAdmin)
         self.tabWidget.setCurrentIndex(0)
@@ -66,13 +101,18 @@ class Ui_MainForAdmin(object):
         MainForAdmin.setWindowTitle(_translate("MainForAdmin", "Form"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_user), _translate("MainForAdmin", "Пользователи"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_analysis), _translate("MainForAdmin", "Анализ"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_creat_test), _translate("MainForAdmin", "Создать тест"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_create_lesson), _translate("MainForAdmin", "Создать учебный материал"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_create_test),
+                                  _translate("MainForAdmin", "Создать тест"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_create_lesson),
+                                  _translate("MainForAdmin", "Создать учебный материал"))
+        self.label.setText(_translate("MainForAdmin", "Пользователь"))
+        self.start_check_push_button.setText(_translate("MainForAdmin", "Проверить"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_check), _translate("MainForAdmin", "Проверить"))
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainForAdmin = QtWidgets.QWidget()
     ui = Ui_MainForAdmin()

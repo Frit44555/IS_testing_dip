@@ -3,12 +3,14 @@ from PyQt5.QtCore import pyqtSlot
 from UI.Ui_MainWindow import Ui_MainWindow
 import Words as wrd
 from psycopg2 import Error
+
 # My widgets
 from Authentication import Authentication
 from ListSearch import ListSearch
 from Lesson import Lesson
 from MainMenu import MainMenu
 from Testing import Testing
+from MainForAdmin import MainForAdmin
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -22,6 +24,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__lesson = None
         self.__authentication = None
         self.__testing = None
+        self.__main_for_admin = None
 
         # Картеж
         # Для пользователя (ID пользователя, ID группы, логин, имя, фамилия, отчество, дату регистрации, примечания)
@@ -81,6 +84,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.__list_search.show()
             except BaseException as BE:
                 print('FATAL ERROR:', BE)
+        if len(self.__user) == 6:
+            try:
+                self.__main_for_admin.show()
+            except BaseException as BE:
+                print('FATAL ERROR:', BE)
 
     @pyqtSlot()
     def __refresh_data(self):
@@ -94,6 +102,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.__list_search = ListSearch(main_window=self, data_base=self.__db, user_id=self.__user[0],
                                                 group_user=self.__user[1], parent=self)
                 self.work_vertical_layout.addWidget(self.__list_search)
+            except BaseException as BE:
+                print('EXECUTION ERROR:', BE)
+
+        if len(self.__user) == 6:
+            try:
+                self.__destroy_active_widget(self.__main_for_admin)
+                self.__main_for_admin = MainForAdmin(parent=self, data_base=self.__db)
+                self.work_vertical_layout.addWidget(self.__main_for_admin)
             except BaseException as BE:
                 print('EXECUTION ERROR:', BE)
 
@@ -119,6 +135,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__destroy_active_widget(self.__authentication)
         if self.__testing:
             self.__destroy_active_widget(self.__testing)
+        if self.__main_for_admin:
+            self.__destroy_active_widget(self.__main_for_admin)
 
         self.__authentication = Authentication(main_window=self, data_base=self.__db, parent=self)
         self.work_vertical_layout.addWidget(self.__authentication)
@@ -145,6 +163,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__authentication = None
         elif isinstance(active_widget, Testing):
             self.__testing = None
+        elif isinstance(active_widget, MainForAdmin):
+            self.__main_for_admin = None
 
     def put_form_for_user(self, user):
         """
@@ -174,6 +194,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__destroy_active_widget(self.__authentication)
             self.__user = user
             self.__set_action()
+            self.__main_for_admin = MainForAdmin(parent=self, data_base=self.__db)
+            self.work_vertical_layout.addWidget(self.__main_for_admin)
         except BaseException as BE:
             print('FATAL ERROR:', BE)
 

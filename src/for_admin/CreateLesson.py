@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QWidget
-from UI.form_for_admin.Ui_ListOfUser import Ui_ListOfUser
+from UI.form_for_admin.Ui_CreateLesson import Ui_CreateLesson
 
 
-class ListOfUser(QWidget, Ui_ListOfUser):
+class CreateLesson(QWidget, Ui_CreateLesson):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
