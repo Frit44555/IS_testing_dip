@@ -67,6 +67,9 @@ DROP FUNCTION IF EXISTS get_tags_on_group;
 -- Функция получения тегов
 DROP FUNCTION IF EXISTS get_tags;
 
+-- Функция отправки всех групп пользователей
+DROP FUNCTION IF EXISTS get_groups_users;
+
 -- Функция создания ответов.  ВНИМАНИЕ!!! РАБОТАЕТ В СВЯЗКЕ С create_result И ВЫЗЫВАЕТСЯ ДО НЕЁ. 1
 DROP FUNCTION IF EXISTS create_answer;
 
@@ -358,6 +361,19 @@ $$
 	SELECT tests.name, tests.type_test, tests.quantity_of_questions, tests.time_to_complete, tests.note
 	FROM tests
 	WHERE tests.tag_id = in_test_id;
+$$
+LANGUAGE SQL;
+
+-- Функция отправки всех групп пользователей
+CREATE OR REPLACE FUNCTION get_groups_users()
+RETURNS SETOF groups_users AS
+$$
+	/*
+	Описание: Эта функция вернёт все группы пользователей.
+	Возвращает: ID группы, название, массив доступных тегов.
+	*/
+	SELECT *
+	FROM groups_users;
 $$
 LANGUAGE SQL;
 

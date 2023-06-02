@@ -208,6 +208,16 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def get_groups_users(self):
+        """
+        Описание: Эта функция вернёт все группы пользователей.
+        Возвращает: таблицу (ID группы, название, массив доступных тегов).
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_groups_users')
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
     def get_middle_bals_all(self):
         """
         Описание: Эта функция отправляет все средние баллы по тестам
