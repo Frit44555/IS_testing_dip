@@ -76,35 +76,27 @@ class QuestManyAnswers(QWidget, Ui_QuestManyAnswers):
         Функция проверяет, какие ответы были выбраны.
         :return boolean
         """
-        answer = ''
+        answer = []  # '|'
         if self.answer1_check_box.isChecked():
-            if answer:
-                answer += '|' + self.answer1_text_browser.toPlainText()
-            else:
-                answer = self.answer1_text_browser.toPlainText()
+            answer.append(self.answer1_text_browser.toPlainText())
 
         if self.answer2_check_box.isChecked():
-            if answer:
-                answer += '|' + self.answer2_text_browser.toPlainText()
-            else:
-                answer = self.answer2_text_browser.toPlainText()
+            answer.append(self.answer2_text_browser.toPlainText())
 
         if self.answer3_check_box.isChecked():
-            if answer:
-                answer += '|' + self.answer3_text_browser.toPlainText()
-            else:
-                answer = self.answer3_text_browser.toPlainText()
+            answer.append(self.answer3_text_browser.toPlainText())
 
         if self.answer4_check_box.isChecked():
-            if answer:
-                answer += '|' + self.answer4_text_browser.toPlainText()
-            else:
-                answer = self.answer4_text_browser.toPlainText()
+            answer.append(self.answer4_text_browser.toPlainText())
 
-        if answer == self.__data[9]:
-            return answer, True
+        # Сортировка перед отправкой
+        answer.sort()
+        # В правильном ответе храниться строка с разделителем "|", по этому требуется преобразование
+        answer_str = '|'.join(answer)
+        if answer_str == self.__data[9]:
+            return answer_str, True
         else:
-            return answer, False
+            return answer_str, False
 
     def __send_answer(self):
         """
