@@ -23,10 +23,11 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__working_data_on_tests = None
         self.__working_data_on_lessons = None
         self.__test_id = None
-        self.__appointment_test_id = None
+        self.__appointment_test = None
         self.__lesson_id = None
         self.__result_user = None
         self.__tags = None
+        self.__appointment_test_id = []
         # ________________________________
 
         # Функции________________________________
@@ -148,7 +149,8 @@ class ListSearch(QWidget, Ui_ListSearch):
         test_name = st[15:st.find('|')].strip()
         self.chose_appointment_test.setText(test_name)
         # Данные выбранного теста, [(ID, тип)]
-        self.__appointment_test_id = [i[::4] for i in self.__working_data_on_tests if test_name in i]
+        self.__appointment_test = [i[::4] for i in self.__working_data_on_tests if test_name in i]
+        self.__appointment_test.append(self.__appointment_test_id[index.row()])
 
     @pyqtSlot()
     def __open_lesson(self):
@@ -177,17 +179,24 @@ class ListSearch(QWidget, Ui_ListSearch):
                                             type_testing=self.__test_id[0][1],
                                             quantity=quantity_ant_time[0][0],
                                             time=quantity_ant_time[0][1])
-        elif page == 2 and self.__appointment_test_id:
+        elif page == 2 and self.__appointment_test:
             self.hide()
             # Поиск количества заданий в тесте и время выполнения
             quantity_ant_time = [row[5:7] for row in self.__working_data_on_tests if row[0] ==
-                                 self.__appointment_test_id[0][0]
+                                 self.__appointment_test[0][0]
                                  ]
 
-            self.__main_window.open_testing(test_id=self.__appointment_test_id[0][0],
-                                            type_testing=self.__appointment_test_id[0][1],
+            self.__main_window.open_testing(test_id=self.__appointment_test[0][0],
+                                            type_testing=self.__appointment_test[0][1],
                                             quantity=quantity_ant_time[0][0],
                                             time=quantity_ant_time[0][1])
+
+            try:
+                self.__db.minus_number_of_attempts(self.__appointment_test[1])
+                self.__db.connection.commit()
+            except (Exception, Error) as error:
+                print('ERROR QUERY:', error)
+
 
     def __refresh_result(self):
         """
@@ -215,12 +224,14 @@ class ListSearch(QWidget, Ui_ListSearch):
 
             for row in self.__assigned_tests:
                 # если deadline прошёл
-                if row[3] < now:
+                if row[3] < now and row[-2]:
                     continue
 
-                test = self.__db.get_name_time_type_note_on_test(row[0])
+                test = self.__db.get_name_time_type_note_on_test(row[1])
                 if test == 1:
                     continue
+                # ID назначенного теста если он добавляется в список
+                self.__appointment_test_id.append(row[0])
 
                 elem_lest = ''
                 elem_lest += 'Название теста: ' + test[0] + ' | '
@@ -294,30 +305,45 @@ class ListSearch(QWidget, Ui_ListSearch):
         if self.change_search_on_test_combo_box.currentText() == 'Имя':
             # Чистка таблицы
             self.test_table_widget.clear()
+            self.test_table_widget.setHorizontalHeaderLabels(["Название", "Тип", "Вопросов", "Время"])
             self.test_table_widget.setRowCount(0)
             numcols = 4  # количество столбцов в таблице
             for row in self.__working_data_on_tests:
                 # поиск по ключевому слову
                 if key_word.lower() in row[3].lower():
                     numrows = self.test_table_widget.rowCount()
-                    self.test_table_widget.setRowCount(numrows+1)
+                    self.test_table_widget.setRowCount(numrows + 1)
                     # заполнение таблицы
                     for j in range(numcols):
                         self.test_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
 
-            self.test_table_widget.setHorizontalHeaderLabels(["Название", "Тип", "Вопросов", "Время"])
-
         elif self.change_search_on_test_combo_box.currentText() == 'Тег':
             tests = None
             for row in self.__tags:
-                if key_word == row[1]:
+                if key_word.lower() in row[1].lower():
                     try:
                         tests = self.__db.get_test_via_teg(row[1], self.__group_user)
                     except (Exception, Error) as error:
                         print('ERROR QUERY:', error)
+
+            if tests is None:
+                QMessageBox.about(self, wrd.wrong_tag['wrong_name_title'], wrd.wrong_tag['wrong_name_text'])
+                return
+
             if tests == 1:
                 return
-            print(tests)
+
+            self.test_table_widget.clear()
+            self.test_table_widget.setHorizontalHeaderLabels(["Название", "Тип", "Вопросов", "Время"])
+            self.test_table_widget.setRowCount(0)
+            numcols = 4  # количество столбцов в таблице
+            for row in tests:
+                # поиск по ключевому слову
+                numrows = self.test_table_widget.rowCount()
+                self.test_table_widget.setRowCount(numrows + 1)
+                # заполнение таблицы
+                for j in range(numcols):
+                    self.test_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 3])))
 
     @pyqtSlot()
     def __find_lesson(self):
@@ -333,6 +359,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         if self.change_search_on_lesson_combo.currentText() == 'Имя':
             # Чистка таблицы
             self.lessons_table_widget.clear()
+            self.lessons_table_widget.setHorizontalHeaderLabels(["Название", ])
             self.lessons_table_widget.setRowCount(0)
             numcols = 1  # количество столбцов в таблице
             for row in self.__working_data_on_lessons:
@@ -344,16 +371,29 @@ class ListSearch(QWidget, Ui_ListSearch):
                     for j in range(numcols):
                         self.lessons_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 1])))
 
-            self.lessons_table_widget.setHorizontalHeaderLabels(["Название", ])
-
         elif self.change_search_on_lesson_combo.currentText() == 'Тег':
             tests = None
             for row in self.__tags:
-                if key_word == row[1]:
+                if key_word.lower() in row[1].lower():
                     try:
                         tests = self.__db.get_lesson_via_tag(row[1], self.__group_user)
                     except (Exception, Error) as error:
                         print('ERROR QUERY:', error)
+
+            if tests is None:
+                QMessageBox.about(self, wrd.wrong_tag['wrong_name_title'], wrd.wrong_tag['wrong_name_text'])
+                return
+
             if tests == 1:
                 return
-            print(tests)
+
+            self.lessons_table_widget.clear()
+            self.lessons_table_widget.setHorizontalHeaderLabels(["Название", ])
+            self.lessons_table_widget.setRowCount(0)
+            # заполнение таблицы
+            numcols = 1  # количество столбцов в таблице
+            for row in tests:
+                numrows = self.lessons_table_widget.rowCount()
+                self.lessons_table_widget.setRowCount(numrows + 1)
+                for j in range(numcols):
+                    self.lessons_table_widget.setItem(numrows, j, QTableWidgetItem(str(row[j + 1])))
