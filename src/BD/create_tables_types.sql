@@ -143,7 +143,7 @@ CREATE TABLE assigned_tests(
 	note text NULL,
 	
 	CONSTRAINT PK_assigned_tests_assigned_test_id PRIMARY KEY(assigned_test_id),
-	CONSTRAINT CHK_number_of_attempts CHECK(number_of_attempts BETWEEN 1 AND 5),
+	CONSTRAINT CHK_number_of_attempts CHECK(number_of_attempts BETWEEN 0 AND 5),
 	CONSTRAINT FK_assigned_tests_tests FOREIGN KEY(test_id) REFERENCES tests,
 	CONSTRAINT FK_assigned_tests_users FOREIGN KEY(user_id) REFERENCES users
 );
