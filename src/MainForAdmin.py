@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QComboBox
-from PyQt5 import QtGui
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from UI.form_for_admin.Ui_MainForAdmin import Ui_MainForAdmin
 
 # My widgets
