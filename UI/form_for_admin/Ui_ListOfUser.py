@@ -16,7 +16,7 @@ class Ui_ListOfUser(object):
         ListOfUser.setObjectName("ListOfUser")
         ListOfUser.resize(882, 506)
         ListOfUser.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(13, 130, 149);")
+                                 "background-color: rgb(13, 130, 149);")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(ListOfUser)
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_7.setSpacing(10)
@@ -75,7 +75,7 @@ class Ui_ListOfUser(object):
         self.verticalLayout_main_group_and_tag.setObjectName("verticalLayout_main_group_and_tag")
         self.frame_groups = QtWidgets.QFrame(ListOfUser)
         self.frame_groups.setStyleSheet("\n"
-"")
+                                        "")
         self.frame_groups.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_groups.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_groups.setObjectName("frame_groups")
@@ -106,6 +106,15 @@ class Ui_ListOfUser(object):
         self.horizontalLayout_4.addLayout(self.verticalLayout_3)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+
+        self.watch_tags_group_push_button = QtWidgets.QPushButton(self.frame_groups)
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.watch_tags_group_push_button.setFont(font)
+        self.watch_tags_group_push_button.setStyleSheet("background-color: rgb(213, 122, 9);")
+        self.watch_tags_group_push_button.setObjectName("watch_tags_group_push_button")
+        self.verticalLayout.addWidget(self.watch_tags_group_push_button)
+
         self.create_group_push_button = QtWidgets.QPushButton(self.frame_groups)
         font = QtGui.QFont()
         font.setPointSize(9)
@@ -195,6 +204,7 @@ class Ui_ListOfUser(object):
         self.delete_user_push_button.setText(_translate("ListOfUser", "Удалить пользователя"))
         self.hint_group_label.setText(_translate("ListOfUser", "Группы"))
         self.create_group_push_button.setText(_translate("ListOfUser", "Создать группу"))
+        self.watch_tags_group_push_button.setText(_translate("ListOfUser", "Смотреть теги"))
         self.add_tag_in_group_push_button.setText(_translate("ListOfUser", "Добавить тег"))
         self.delete_group_push_button.setText(_translate("ListOfUser", "Удалить группу"))
         self.hint_tag_label.setText(_translate("ListOfUser", "Теги"))
@@ -204,6 +214,7 @@ class Ui_ListOfUser(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     ListOfUser = QtWidgets.QWidget()
     ui = Ui_ListOfUser()
