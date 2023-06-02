@@ -250,6 +250,15 @@ class DataBaseQuery:
         self.__cursor.callproc('set_user_group', [user_id, group_id])
         return
 
+    def minus_number_of_attempts(self, assigned_test_id):
+        """
+        Описание: Эта функция количество попыток у нужной записи в таблице "assigned_test".
+        Принимает аргументы: ID назначенного теста.
+        :return None
+        """
+        self.__cursor.callproc('minus_number_of_attempts', [assigned_test_id, ])
+        return
+
     def set_completed_in_assigned_test(self, assigned_test_id, completed=None):
         """
         Описание: Эта функция устанавливает значение поля "completed" у таблицы "assigned_test".

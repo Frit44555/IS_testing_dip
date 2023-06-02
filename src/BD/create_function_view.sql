@@ -82,6 +82,9 @@ DROP FUNCTION IF EXISTS create_test;
 -- Функция создания назначенного теста
 DROP FUNCTION IF EXISTS create_assigned_test;
 
+--Функция уменьшает количество попыток
+DROP FUNCTION IF EXISTS minus_number_of_attempts;
+
 -- Функция изменения состояния проверки назначенного теста
 DROP FUNCTION IF EXISTS set_completed_in_assigned_test;
 
@@ -119,7 +122,6 @@ DROP FUNCTION IF EXISTS get_middle_bals_all;
 -- Функция получения среднего балла из представления по тесту
 DROP FUNCTION IF EXISTS get_middle_bals_on_test;
 --------------------------------------------
-
 
 
 ----------------------Create functions----------------------
@@ -635,6 +637,22 @@ $$
 	*/
 	INSERT INTO tests(quest_id, tag_id, name, type_test, quantity_of_questions, time_to_complete, note)
 	VALUES(in_quest_id, in_tag_id, in_name, in_type_test, in_quantity_of_questions, in_time_to_complete, in_note);
+$$
+LANGUAGE SQL;
+
+--Функция уменьшает количество попыток
+CREATE OR REPLACE FUNCTION minus_number_of_attempts(in_assigned_test_id int)
+RETURNS void AS
+$$
+	/*
+	Описание: Эта функция количество попыток у нужной записи в таблице "assigned_test".
+	Принимает аргументы: ID назначенного теста. 
+	*/
+	UPDATE assigned_tests
+	SET number_of_attempts = (CASE WHEN number_of_attempts = 0 THEN 0
+							  ELSE number_of_attempts - 1
+							 END)
+	WHERE assigned_test_id = in_assigned_test_id;
 $$
 LANGUAGE SQL;
 
