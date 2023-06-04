@@ -103,15 +103,15 @@ class Ui_Ui_ChangeGroup(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem6)
-        self.create_group_push_button = QtWidgets.QPushButton(Ui_CreateGroup)
+        self.apply_push_button = QtWidgets.QPushButton(Ui_CreateGroup)
         font = QtGui.QFont()
         font.setPointSize(10)
-        self.create_group_push_button.setFont(font)
-        self.create_group_push_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+        self.apply_push_button.setFont(font)
+        self.apply_push_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
                                                     "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
                                                     "QPushButton:disabled{ background:#a2979c; }")
-        self.create_group_push_button.setObjectName("create_group_push_button")
-        self.horizontalLayout_2.addWidget(self.create_group_push_button)
+        self.apply_push_button.setObjectName("create_group_push_button")
+        self.horizontalLayout_2.addWidget(self.apply_push_button)
         self.cancel_push_button = QtWidgets.QPushButton(Ui_CreateGroup)
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -134,7 +134,7 @@ class Ui_Ui_ChangeGroup(object):
         self.add_tag_push_button.setText(_translate("Ui_CreateGroup", "Добавить"))
         self.hint_accesse_tag_label.setText(_translate("Ui_CreateGroup", "Теги доступные группе"))
         self.remove_tag_push_button_3.setText(_translate("Ui_CreateGroup", "Удалить"))
-        self.create_group_push_button.setText(_translate("Ui_CreateGroup", "Изменить"))
+        self.apply_push_button.setText(_translate("Ui_CreateGroup", "Изменить"))
         self.cancel_push_button.setText(_translate("Ui_CreateGroup", "Закрыть"))
 
 
