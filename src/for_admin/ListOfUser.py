@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from UI.form_for_admin.Ui_ListOfUser import Ui_ListOfUser
 from psycopg2 import Error
 from PyQt5.QtCore import pyqtSlot
+import src.Words as wrd
 
 # My widgets
 from src.for_admin.dialog_admin.CreateTagDialog import CreateTagDialog
@@ -42,6 +43,9 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         # ________________________________
 
     def __set_action(self):
+        """
+        Устанавливает действия кнопкам.
+        """
         self.create_tag_push_button.clicked.connect(self.__create_tag)
         self.create_group_push_button.clicked.connect(self.__create_group)
         self.change_group_push_button.clicked.connect(self.__change_user_group)
@@ -49,11 +53,13 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         self.users_list_widget.clicked.connect(self.__get_user)
         self.groups_user_list_widget.clicked.connect(self.__get_group)
         self.tags_list_widget.clicked.connect(self.__get_tags)
+        self.delete_tag_push_button.clicked.connect(self.__delete_tag)
+        self.delete_group_push_button.clicked.connect(self.__delete_group_user)
+        self.delete_user_push_button.clicked.connect(self.__delete_user)
 
     def __fill_user_list(self):
         """
-        Заполнение списка назначенных тестов
-        :return None
+        Заполнение списка пользователей.
         """
         try:
             self.__list_users = self.__db.get_list_users()
@@ -63,6 +69,7 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         if self.__list_users == 1:
             return
 
+        self.users_list_widget.clear()
         for row in self.__list_users:
             # ID пользователя, группу пользователя, логин, имя, фамилию, отчество, дату регистрации примечание
             elem_lest = ''
@@ -74,6 +81,9 @@ class ListOfUser(QWidget, Ui_ListOfUser):
             self.users_list_widget.addItem(elem_lest)
 
     def __fill_group_list(self):
+        """
+        Заполнение списка групп.
+        """
         try:
             self.__groups_user = self.__db.get_groups_users()
         except (Exception, Error) as error:
@@ -82,6 +92,7 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         if self.__groups_user == 1:
             return
 
+        self.groups_user_list_widget.clear()
         for row in self.__groups_user:
             # ID тега, название
             elem_lest = ''
@@ -91,6 +102,9 @@ class ListOfUser(QWidget, Ui_ListOfUser):
             self.groups_user_list_widget.addItem(elem_lest)
 
     def __fill_tag_list(self):
+        """
+        Заполнение списка тегов.
+        """
         try:
             self.__tags_user = self.__db.get_tags()
         except (Exception, Error) as error:
@@ -99,6 +113,7 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         if self.__tags_user == 1:
             return
 
+        self.tags_list_widget.clear()
         for row in self.__tags_user:
             # ID тега, название
             elem_lest = ''
@@ -109,37 +124,137 @@ class ListOfUser(QWidget, Ui_ListOfUser):
 
     @pyqtSlot()
     def __create_tag(self):
+        """
+        Метод вызывает окно создания тега.
+        """
         self.__dialog_tag = CreateTagDialog(data_base=self.__db)
         self.__dialog_tag.show()
 
     @pyqtSlot()
     def __create_group(self):
+        """
+        Метод вызывает окно создания группы.
+        """
         self.__dialog_group = CreateGroup(data_base=self.__db)
         self.__dialog_group.show()
 
     @pyqtSlot()
     def __change_user_group(self):
+        """
+        Метод вызывает окно изменения группы пользователя.
+        """
         self.__dialog_user_group = ChangeUserGroup(data_base=self.__db, data=self.__current_user)
         self.__dialog_user_group.show()
 
     @pyqtSlot()
     def __change_group(self):
+        """
+        Метод вызывает окно редактирования группы.
+        """
         self.__dialog_user_group = ChangeGroup(data_base=self.__db, data=self.__current_group)
         self.__dialog_user_group.show()
 
     def __get_user(self):
+        """
+        Метод запоминает выделенного пользователя в списке пользователей.
+        """
         self.change_group_push_button.setEnabled(True)
         self.delete_user_push_button.setEnabled(True)
         index = self.users_list_widget.selectedIndexes()[0].row()
         self.__current_user = self.__list_users[index]
 
     def __get_group(self):
+        """
+        Метод запоминает выделенную группу в списке групп.
+        """
         self.change_tags_group_push_button.setEnabled(True)
         self.delete_group_push_button.setEnabled(True)
         index = self.groups_user_list_widget.selectedIndexes()[0].row()
         self.__current_group = self.__groups_user[index]
 
     def __get_tags(self):
+        """
+        Метод запоминает выделенный тег в списке иегов.
+        """
         self.delete_tag_push_button.setEnabled(True)
         index = self.tags_list_widget.selectedIndexes()[0].row()
         self.__current_tag = self.__tags_user[index]
+
+    @pyqtSlot()
+    def __delete_tag(self):
+        """
+        Метод удаляет тег из БД и заново заполняет список.
+        """
+        if self.__current_tag and self.__current_tag[0] != 1:
+            # Удаление выделенного тега
+            try:
+                self.__db.delete_tag(self.__current_tag[0])
+            except (Exception, Error) as error:
+                print(error)
+            # Выключение кнопки и удаление переменной текущего тега
+            self.delete_tag_push_button.setEnabled(False)
+            self.__current_tag = None
+
+            self.__db.connection.commit()
+            self.__fill_tag_list()
+
+        elif self.__current_tag[0] == 1:
+            # При попытке удалить тег по умолчанию
+            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_tag_one_title'],
+                              wrd.hint_on_list_of_user['delete_tag_one_text'])
+
+        else:
+            # остальные случаи
+            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                              wrd.hint_on_list_of_user['delete_error_text'])
+
+    @pyqtSlot()
+    def __delete_group_user(self):
+        """
+        Метод удаляет группу из БД и заново заполняет список.
+        """
+        if self.__current_group and self.__current_group[0] != 1:
+            # Удаление выделенного тега
+            try:
+                self.__db.delete_group_user(self.__current_group[0])
+            except (Exception, Error) as error:
+                print(error)
+            # Выключение кнопки и удаление переменной текущей группы
+            self.delete_group_push_button.setEnabled(False)
+            self.__current_group = None
+
+            self.__db.connection.commit()
+            self.__fill_group_list()
+
+        elif self.__current_group[0] == 1:
+            # При попытке удалить группу по умолчанию
+            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_group_one_title'],
+                              wrd.hint_on_list_of_user['delete_group_one_text'])
+
+        else:
+            # остальные случаи
+            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                              wrd.hint_on_list_of_user['delete_error_text'])
+
+    @pyqtSlot()
+    def __delete_user(self):
+        """
+        Метод удаляет пользователя из БД и заново заполняет список.
+        """
+        if self.__current_user:
+            # Удаление выделенного пользователя
+            try:
+                self.__db.delete_user(self.__current_user[0])
+            except (Exception, Error) as error:
+                print(error)
+            # Выключение кнопки и удаление переменной текущего пользователя
+            self.delete_user_push_button.setEnabled(False)
+            self.__current_user = None
+
+            self.__db.connection.commit()
+            self.__fill_user_list()
+
+        else:
+            # остальные случаи
+            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                              wrd.hint_on_list_of_user['delete_error_text'])
