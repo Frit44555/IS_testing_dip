@@ -60,6 +60,8 @@ hint_on_list_of_user = {
     'delete_tag_one_text': 'Тег по умолчанию удалить не возможно',
     'delete_group_one_title': 'Невозможно удалить',
     'delete_group_one_text': 'Группу по умолчанию удалить не возможно',
+    'delete_group_tag_less_then_one_title': 'Невозможно удалить',
+    'delete_group_tag_less_then_one_text': 'У группы должен присутствовать хотя бы ОДИН тег!',
     'delete_error_title': 'Ошибка',
     'delete_error_text': 'Ошибка удаления'
 }
