@@ -87,7 +87,6 @@ class Testing(QWidget, Ui_Testing):
             self.__main_window.close_testing()
             self.close()
 
-
     def __assembly_testing(self):
         """
         Собирает тестирование
@@ -192,7 +191,6 @@ class Testing(QWidget, Ui_Testing):
                                         time_start=self.__time_start, time_finish=time_stop, verified=True)
 
                 # Коммиты ответом и результата
-                self.__db.connection.commit()
                 self.__db.connection.commit()
 
             except (Exception, Error) as error:
