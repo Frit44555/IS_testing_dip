@@ -105,6 +105,15 @@ DROP FUNCTION IF EXISTS create_tag;
 
 -- Функция получения назначенного теста для пользователя
 DROP FUNCTION IF EXISTS get_assigned_tests_for_user;
+
+-- Функция удаления тега
+DROP FUNCTION IF EXISTS delete_tag;
+
+-- Функция удаления группы
+DROP FUNCTION IF EXISTS delete_group_user;
+
+-- Функция ужаления пользователя
+DROP FUNCTION IF EXISTS delete_user;
 --------------------------------------------
 
 
@@ -763,13 +772,56 @@ $$
 	/*
 	Описание: Эта функция отправляет данные о назначенных тестах по конкретному пользователю
 	Принимает аргументы: ID пользователя
-	Возвращает: ID назначеного теста, ID теста, назраченное время, крайний срок, состояние о завершённости,
+	Возвращает: ID назначенного теста, ID теста, назначенное время, крайний срок, состояние о завершённости,
 				кол-во попыток, примечания
 	*/
 	SELECT assigned_test_id, test_id, appointment_time, deadline, completed,
 			number_of_attempts, note
 	FROM assigned_tests
 	WHERE user_id = in_user_id;
+$$
+LANGUAGE SQL;
+
+-- Функция удаления тега
+CREATE OR REPLACE FUNCTION delete_tag(in_tag_id int)
+RETURNS void AS
+$$
+	/*
+	Описание: Эта функция удаляет тег по заданному ID.
+	Принимает аргументы: ID тега.
+	*/
+	UPDATE groups_users SET available_tags = array_remove(available_tags, in_tag_id);
+	DELETE FROM tags WHERE tag_id = in_tag_id;
+$$
+LANGUAGE SQL;
+
+-- Функция получения тегов через группы
+CREATE OR REPLACE FUNCTION delete_group_user(in_group_id int)
+RETURNS void AS
+$$
+	/*
+	Описание: Эта функция удаляет группу по заданному ID.
+	Принимает аргументы: ID группы.
+	*/
+	UPDATE users
+	SET group_id = 1
+	WHERE group_id = in_group_id;
+	
+	DELETE FROM groups_users WHERE groups_users.group_id = in_group_id;
+$$
+LANGUAGE SQL;
+
+-- Функция ужаления пользователя
+CREATE OR REPLACE FUNCTION delete_user(in_user_id int)
+RETURNS void AS
+$$
+	/*
+	Описание: Эта функция удаляет пользователя по заданному ID.
+	Принимает аргументы: ID пользователя.
+	*/
+	DELETE FROM assigned_tests WHERE user_id = in_user_id;
+	DELETE FROM results WHERE user_id = in_user_id;
+	DELETE FROM users WHERE user_id = in_user_id;
 $$
 LANGUAGE SQL;
 --------------------------------------------
