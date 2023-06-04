@@ -374,3 +374,30 @@ class DataBaseQuery:
         """
         self.__cursor.callproc('create_group_user', [name, available_tag])
         return
+
+    def delete_tag(self, tag_id):
+        """
+        Описание: Эта функция удаляет тег по заданному ID.
+        Принимает аргументы: ID тега.
+        :return None
+        """
+        self.__cursor.callproc('delete_tag', [tag_id, ])
+        return
+
+    def delete_group_user(self, group_id):
+        """
+        Описание: Эта функция удаляет группу по заданному ID.
+        Принимает аргументы: ID группы.
+        :return None
+        """
+        self.__cursor.callproc('delete_group_user', [group_id, ])
+        return
+
+    def delete_user(self, user_id):
+        """
+        Описание: Эта функция удаляет группу по заданному ID.
+        Принимает аргументы: ID группы.
+        :return None
+        """
+        self.__cursor.callproc('delete_user', [user_id, ])
+        return
