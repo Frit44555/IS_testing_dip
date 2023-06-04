@@ -114,6 +114,9 @@ DROP FUNCTION IF EXISTS delete_group_user;
 
 -- Функция ужаления пользователя
 DROP FUNCTION IF EXISTS delete_user;
+
+-- Функция удаления тега из группы
+DROP FUNCTION IF EXISTS remove_tag_from_group;
 --------------------------------------------
 
 
@@ -822,6 +825,19 @@ $$
 	DELETE FROM assigned_tests WHERE user_id = in_user_id;
 	DELETE FROM results WHERE user_id = in_user_id;
 	DELETE FROM users WHERE user_id = in_user_id;
+$$
+LANGUAGE SQL;
+
+-- Функция удаления тега из группы
+CREATE OR REPLACE FUNCTION remove_tag_from_group(in_group_id int, in_tag_id int)
+RETURNS void AS
+$$
+	/*
+	Описание: Эта функция удаляет доступный тег из группы по заданному ID.
+	Принимает аргументы: ID группы, ID тега.
+	*/
+	UPDATE groups_users SET available_tags = array_remove(available_tags, in_tag_id)
+	WHERE group_id = in_group_id;
 $$
 LANGUAGE SQL;
 --------------------------------------------

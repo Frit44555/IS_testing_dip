@@ -395,9 +395,18 @@ class DataBaseQuery:
 
     def delete_user(self, user_id):
         """
-        Описание: Эта функция удаляет группу по заданному ID.
-        Принимает аргументы: ID группы.
+        Описание: Эта функция удаляет пользователя по заданному ID.
+        Принимает аргументы: ID пользователя.
         :return None
         """
         self.__cursor.callproc('delete_user', [user_id, ])
+        return
+
+    def remove_tag_from_group(self, group_id, tag_id):
+        """
+        Описание: Эта функция удаляет тег из группы.
+        Принимает аргументы: ID группы, ID тега.
+        :return None
+        """
+        self.__cursor.callproc('remove_tag_from_group', [group_id, tag_id])
         return
