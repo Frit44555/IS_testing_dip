@@ -54,3 +54,12 @@ wrong_tag = {
     'wrong_name_title': 'Несуществующий тег',
     'wrong_name_text': 'Такой тег не найден. Возможно вам следует обновить данные и попробовать ещё раз'
 }
+
+hint_on_list_of_user = {
+    'delete_tag_one_title': 'Невозможно удалить',
+    'delete_tag_one_text': 'Тег по умолчанию удалить не возможно',
+    'delete_group_one_title': 'Невозможно удалить',
+    'delete_group_one_text': 'Группу по умолчанию удалить не возможно',
+    'delete_error_title': 'Ошибка',
+    'delete_error_text': 'Ошибка удаления'
+}
