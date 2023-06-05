@@ -197,7 +197,6 @@ class ListSearch(QWidget, Ui_ListSearch):
             except (Exception, Error) as error:
                 print('ERROR QUERY:', error)
 
-
     def __refresh_result(self):
         """
         Метод обновления списка результатов.
