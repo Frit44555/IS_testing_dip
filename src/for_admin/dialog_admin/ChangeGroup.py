@@ -116,9 +116,11 @@ class ChangeGroup(QWidget, Ui_Ui_ChangeGroup):
             self.access_tags_combo_box.addItem(row[1])
 
     def __apply(self):
+        """
+        Метод завершения изменения
+        """
         try:
             self.__db.connection.commit()
             self.close()
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
-
