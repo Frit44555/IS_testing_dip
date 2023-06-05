@@ -5,8 +5,8 @@ from image import resourse
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(900, 600)
-        MainWindow.setMinimumSize(900, 600)
+        MainWindow.resize(1000, 600)
+        MainWindow.setMinimumSize(1000, 600)
         MainWindow.setStyleSheet("background-color: rgb(203, 122, 9); color: white")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

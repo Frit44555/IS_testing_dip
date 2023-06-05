@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QWidget
 from UI.form_for_admin.Ui_Analysis import Ui_Analysis
 from psycopg2 import Error
 
+from src.for_admin.StatisticTestForAdmin import StatisticTestForAdmin
+
 
 class Analysis(QWidget, Ui_Analysis):
     def __init__(self, data_base, parent=None):
@@ -13,6 +15,7 @@ class Analysis(QWidget, Ui_Analysis):
         # ________________________________
 
         # Функции________________________________
+        self.__set_action()
         self.__fill_list_users()
         self.__fill_list_test()
         # ________________________________
@@ -21,7 +24,7 @@ class Analysis(QWidget, Ui_Analysis):
         """
         Устанавливает действия кнопкам
         """
-        pass
+        self.show_result_test_button.clicked.connect(self.__show_statistic_test)
 
     def __fill_list_users(self):
         """
@@ -72,3 +75,8 @@ class Analysis(QWidget, Ui_Analysis):
             elem_list += 'Вопросов: ' + str(row[5]) + ' | '
 
             self.result_test_list_widget.addItem(elem_list)
+
+    def __show_statistic_test(self):
+        print(1)
+        self.__statistic_test = StatisticTestForAdmin(parent=self)
+        self.vertical_layout_graph_result_test.addWidget(self.__statistic_test)

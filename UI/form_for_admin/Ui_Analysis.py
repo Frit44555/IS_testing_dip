@@ -16,7 +16,7 @@ class Ui_Analysis(object):
         Analysis.setObjectName("Analysis")
         Analysis.resize(833, 435)
         Analysis.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(13, 120, 149);")
+                               "background-color: rgb(13, 130, 149);")
         self.verticalLayout = QtWidgets.QVBoxLayout(Analysis)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
@@ -26,29 +26,29 @@ class Ui_Analysis(object):
         font.setPointSize(11)
         self.tabWidget.setFont(font)
         self.tabWidget.setStyleSheet("QTabWidget::pane\n"
-"{\n"
-"    border:1px;\n"
-"    background: rgb(203, 122, 9);\n"
-"}\n"
-"\n"
-"QTabBar::tab\n"
-"{\n"
-"    color: white;\n"
-"    background: rgb(13, 120, 149);\n"
-"    min-width: 25ex;\n"
-"    min-height: 8ex;\n"
-"}\n"
-"\n"
-"QTabBar::tab::selected\n"
-"{\n"
-"    background: rgb(213, 122, 9);\n"
-"}\n"
-"\n"
-"QTabBar::tab::hover\n"
-"{\n"
-"    background: rgb(203, 112, 9);\n"
-"}\n"
-"")
+                                     "{\n"
+                                     "    border:1px;\n"
+                                     "    background: rgb(203, 122, 9);\n"
+                                     "}\n"
+                                     "\n"
+                                     "QTabBar::tab\n"
+                                     "{\n"
+                                     "    color: white;\n"
+                                     "    background: rgb(13, 120, 149);\n"
+                                     "    min-width: 25ex;\n"
+                                     "    min-height: 8ex;\n"
+                                     "}\n"
+                                     "\n"
+                                     "QTabBar::tab::selected\n"
+                                     "{\n"
+                                     "    background: rgb(213, 122, 9);\n"
+                                     "}\n"
+                                     "\n"
+                                     "QTabBar::tab::hover\n"
+                                     "{\n"
+                                     "    background: rgb(203, 112, 9);\n"
+                                     "}\n"
+                                     "")
         self.tabWidget.setObjectName("tabWidget")
         self.result_user = QtWidgets.QWidget()
         self.result_user.setObjectName("result_user")
@@ -143,13 +143,16 @@ class Ui_Analysis(object):
         _translate = QtCore.QCoreApplication.translate
         Analysis.setWindowTitle(_translate("Analysis", "Form"))
         self.show_result_user_button.setText(_translate("Analysis", "Посмотреть"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.result_user), _translate("Analysis", "Результаты пользователей"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.result_user),
+                                  _translate("Analysis", "Результаты пользователей"))
         self.show_result_test_button.setText(_translate("Analysis", "Посмотреть"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.statistic_of_test), _translate("Analysis", "Статистика тестов"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.statistic_of_test),
+                                  _translate("Analysis", "Статистика тестов"))
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     Analysis = QtWidgets.QWidget()
     ui = Ui_Analysis()
