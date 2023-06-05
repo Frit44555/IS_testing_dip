@@ -67,6 +67,9 @@ DROP FUNCTION IF EXISTS get_tags_on_group;
 -- Функция получения тегов
 DROP FUNCTION IF EXISTS get_tags;
 
+--Функция отправки всех тестов
+DROP FUNCTION IF EXISTS ger_tests_all;
+
 -- Функция отправки всех групп пользователей
 DROP FUNCTION IF EXISTS get_groups_users;
 
@@ -112,7 +115,7 @@ DROP FUNCTION IF EXISTS delete_tag;
 -- Функция удаления группы
 DROP FUNCTION IF EXISTS delete_group_user;
 
--- Функция ужаления пользователя
+-- Функция удаления пользователя
 DROP FUNCTION IF EXISTS delete_user;
 
 -- Функция удаления тега из группы
@@ -332,7 +335,7 @@ DECLARE
 	--полученный балл за задание
 	bal int;
 BEGIN
-	-- для кажждой записи в ответах ДЛЯ 1 ТЕСТА
+	-- для каждой записи в ответах ДЛЯ 1 ТЕСТА
 	FOR answer_bals IN SELECT quest_id, correct FROM answers
 					JOIN results on answers.answer_id = ANY(results.answer_id)
 					WHERE results.test_id = in_test_id
@@ -418,6 +421,19 @@ $$
 	SELECT lessons.content
 	FROM lessons
 	WHERE lessons.lesson_id = in_lesson;
+$$
+LANGUAGE SQL;
+
+--Функци отправки всех тестов
+CREATE OR REPLACE FUNCTION ger_tests_all()
+RETURNS SETOF tests AS
+$$
+	/*
+	Описание: Эта функция вернёт все существующие тесты.
+	Возвращает: таблицу тестов.
+	*/
+	SELECT test_id, quest_id, tag_id, name, type_test, quantity_of_questions, time_to_complete, note
+	FROM tests;
 $$
 LANGUAGE SQL;
 
