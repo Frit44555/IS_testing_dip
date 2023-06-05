@@ -163,12 +163,8 @@ BEGIN
 	--Возврящает рабочии данные
 	SELECT admins.admin_id, admins.login, admins.name, admins.surname, admins.patronymic, admins.note
 	FROM admins
-	WHERE EXISTS(
-		--Ищет пользователя
-		SELECT admins.login
-		FROM admins
-		WHERE admins.password = crypt(in_password, salts) AND admins.login = in_login
-	);
+	WHERE  admins.password = crypt(in_password, salts)
+			AND admins.login = in_login;
 END
 $$
 LANGUAGE plpgsql;
@@ -258,12 +254,8 @@ BEGIN
 	SELECT users.user_id, users.group_id, users.login, users.name, users.surname, users.patronymic,
 			users.date_registration, users.note
 	FROM users
-	WHERE EXISTS(
-		--Ищет пользователя
-		SELECT users.login
-		FROM users
-		WHERE users.password = crypt(in_password, salts) AND users.login = in_login
-	);
+	WHERE  users.password = crypt(in_password, salts)
+			AND users.login = in_login;
 END
 $$
 LANGUAGE plpgsql;
