@@ -232,19 +232,19 @@ class ListSearch(QWidget, Ui_ListSearch):
                 # ID назначенного теста если он добавляется в список
                 self.__appointment_test_id.append(row[0])
 
-                elem_lest = ''
-                elem_lest += 'Название теста: ' + test[0] + ' | '
-                elem_lest += 'Тип тестирования: ' + test[1] + ' | '
-                elem_lest += 'Кол-во вопросов: ' + str(test[2]) + ' | '
-                elem_lest += 'Время выполнения: ' + str(test[3]) + ' | '
+                elem_list = ''
+                elem_list += 'Название теста: ' + test[0] + ' | '
+                elem_list += 'Тип тестирования: ' + test[1] + ' | '
+                elem_list += 'Кол-во вопросов: ' + str(test[2]) + ' | '
+                elem_list += 'Время выполнения: ' + str(test[3]) + ' | '
 
-                elem_lest += 'Назначен: ' + str(row[2])[:-7] + ' | '
-                elem_lest += 'Конечный срок: ' + str(row[3]) + ' | '
-                elem_lest += 'Состояние: ' + ('Пройден' if row[4] else 'Не пройден') + ' | '
-                elem_lest += 'Кол-во попыток: ' + str(row[5]) + ' | '
-                elem_lest += 'Примечание: ' + str(row[6]) + ' | '
+                elem_list += 'Назначен: ' + str(row[2])[:-7] + ' | '
+                elem_list += 'Конечный срок: ' + str(row[3]) + ' | '
+                elem_list += 'Состояние: ' + ('Пройден' if row[4] else 'Не пройден') + ' | '
+                elem_list += 'Кол-во попыток: ' + str(row[5]) + ' | '
+                elem_list += 'Примечание: ' + str(row[6]) + ' | '
 
-                self.appointment_test_list_widget.addItem(elem_lest)
+                self.appointment_test_list_widget.addItem(elem_list)
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
