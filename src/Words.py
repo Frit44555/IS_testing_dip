@@ -63,5 +63,18 @@ hint_on_list_of_user = {
     'delete_group_tag_less_then_one_title': 'Невозможно удалить',
     'delete_group_tag_less_then_one_text': 'У группы должен присутствовать хотя бы ОДИН тег!',
     'delete_error_title': 'Ошибка',
-    'delete_error_text': 'Ошибка удаления'
+    'delete_error_text': 'Ошибка удаления',
+    'create_group_tag_less_then_one_title': 'Ошибка завершения',
+    'create_group_tag_less_then_one_text': 'У группы должен присутствовать хотя бы ОДИН тег!',
+    'create_group_tag_equals_zero_title': 'Ошибка',
+    'create_group_tag_equals_zero_text': 'Нечего удалять',
+    'create_group_no_name_title': 'Ошибка',
+    'create_group_no_name_text': 'Вы не заполняли поле название группы',
+
+    'change_user_group_delete_user_title': 'Подтверждение',
+    'change_user_group_delete_user_text': 'Вы уверены что хотите удалить пользователя?',
+    'groups_users_delete_group_title': 'Подтверждение',
+    'groups_users_delete_group_text': 'Вы уверены что хотите удалить группу',
+    'tags_delete_group_title': 'Подтверждение',
+    'tags_delete_group_text': 'Вы уверены что хотите удалить тег',
 }
