@@ -71,14 +71,14 @@ class ListOfUser(QWidget, Ui_ListOfUser):
 
         self.users_list_widget.clear()
         for row in self.__list_users:
-            # ID пользователя, группу пользователя, логин, имя, фамилию, отчество, дату регистрации примечание
-            elem_lest = ''
-            elem_lest += 'Login: ' + row[2] + ' | '
-            elem_lest += 'Группа: ' + str(row[1]) + ' | '
-            elem_lest += 'Имя: ' + row[4] + ' | '
-            elem_lest += 'Дата регистрации: ' + str(row[6]) + ' | '
+            # ID пользователя, группа пользователя, логин, имя, фамилию, отчество, дату регистрации примечание
+            elem_list = ''
+            elem_list += 'ID: ' + str(row[0]) + ' | '
+            elem_list += 'Группа: ' + str(row[1]) + ' | '
+            elem_list += 'Имя: ' + row[4] + ' | '
+            elem_list += 'Дата регистрации: ' + str(row[6]) + ' | '
 
-            self.users_list_widget.addItem(elem_lest)
+            self.users_list_widget.addItem(elem_list)
 
     def __fill_group_list(self):
         """
@@ -95,11 +95,11 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         self.groups_user_list_widget.clear()
         for row in self.__groups_user:
             # ID тега, название
-            elem_lest = ''
-            elem_lest += 'ID: ' + str(row[0]) + ' | '
-            elem_lest += 'Название: ' + row[1] + ' | '
+            elem_list = ''
+            elem_list += 'ID: ' + str(row[0]) + ' | '
+            elem_list += 'Название: ' + row[1] + ' | '
 
-            self.groups_user_list_widget.addItem(elem_lest)
+            self.groups_user_list_widget.addItem(elem_list)
 
     def __fill_tag_list(self):
         """
@@ -116,11 +116,11 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         self.tags_list_widget.clear()
         for row in self.__tags_user:
             # ID тега, название
-            elem_lest = ''
-            elem_lest += 'ID: ' + str(row[0]) + ' | '
-            elem_lest += 'Название: ' + row[1] + ' | '
+            elem_list = ''
+            elem_list += 'ID: ' + str(row[0]) + ' | '
+            elem_list += 'Название: ' + row[1] + ' | '
 
-            self.tags_list_widget.addItem(elem_lest)
+            self.tags_list_widget.addItem(elem_list)
 
     @pyqtSlot()
     def __create_tag(self):
