@@ -185,76 +185,100 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         """
         Метод удаляет тег из БД и заново заполняет список.
         """
-        if self.__current_tag and self.__current_tag[0] != 1:
-            # Удаление выделенного тега
-            try:
-                self.__db.delete_tag(self.__current_tag[0])
-            except (Exception, Error) as error:
-                print(error)
-            # Выключение кнопки и удаление переменной текущего тега
-            self.delete_tag_push_button.setEnabled(False)
-            self.__current_tag = None
+        qm = QMessageBox
+        reply = qm.question(self, wrd.hint_on_list_of_user['tags_delete_group_title'],
+                            wrd.hint_on_list_of_user['tags_delete_group_text'],
+                            qm.Yes | qm.No)
+        # ответ
+        if reply == qm.Yes:
+            if self.__current_tag and self.__current_tag[0] != 1:
+                # Удаление выделенного тега
+                try:
+                    self.__db.delete_tag(self.__current_tag[0])
+                except (Exception, Error) as error:
+                    print(error)
+                # Выключение кнопки и удаление переменной текущего тега
+                self.delete_tag_push_button.setEnabled(False)
+                self.__current_tag = None
 
-            self.__db.connection.commit()
-            self.__fill_tag_list()
+                self.__db.connection.commit()
+                self.__fill_tag_list()
 
-        elif self.__current_tag[0] == 1:
-            # При попытке удалить тег по умолчанию
-            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_tag_one_title'],
-                              wrd.hint_on_list_of_user['delete_tag_one_text'])
+            elif self.__current_tag[0] == 1:
+                # При попытке удалить тег по умолчанию
+                QMessageBox.about(self, wrd.hint_on_list_of_user['delete_tag_one_title'],
+                                  wrd.hint_on_list_of_user['delete_tag_one_text'])
 
+            else:
+                # остальные случаи
+                QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                                  wrd.hint_on_list_of_user['delete_error_text'])
         else:
-            # остальные случаи
-            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
-                              wrd.hint_on_list_of_user['delete_error_text'])
+            return
 
     @pyqtSlot()
     def __delete_group_user(self):
         """
         Метод удаляет группу из БД и заново заполняет список.
         """
-        if self.__current_group and self.__current_group[0] != 1:
-            # Удаление выделенного тега
-            try:
-                self.__db.delete_group_user(self.__current_group[0])
-            except (Exception, Error) as error:
-                print(error)
-            # Выключение кнопки и удаление переменной текущей группы
-            self.delete_group_push_button.setEnabled(False)
-            self.__current_group = None
+        qm = QMessageBox
+        reply = qm.question(self, wrd.hint_on_list_of_user['groups_users_delete_group_title'],
+                            wrd.hint_on_list_of_user['groups_users_delete_group_text'],
+                            qm.Yes | qm.No)
+        # ответ
+        if reply == qm.Yes:
+            if self.__current_group and self.__current_group[0] != 1:
+                # Удаление выделенного тега
+                try:
+                    self.__db.delete_group_user(self.__current_group[0])
+                except (Exception, Error) as error:
+                    print(error)
+                # Выключение кнопки и удаление переменной текущей группы
+                self.delete_group_push_button.setEnabled(False)
+                self.__current_group = None
 
-            self.__db.connection.commit()
-            self.__fill_group_list()
+                self.__db.connection.commit()
+                self.__fill_group_list()
 
-        elif self.__current_group[0] == 1:
-            # При попытке удалить группу по умолчанию
-            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_group_one_title'],
-                              wrd.hint_on_list_of_user['delete_group_one_text'])
+            elif self.__current_group[0] == 1:
+                # При попытке удалить группу по умолчанию
+                QMessageBox.about(self, wrd.hint_on_list_of_user['delete_group_one_title'],
+                                  wrd.hint_on_list_of_user['delete_group_one_text'])
 
+            else:
+                # остальные случаи
+                QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                                  wrd.hint_on_list_of_user['delete_error_text'])
         else:
-            # остальные случаи
-            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
-                              wrd.hint_on_list_of_user['delete_error_text'])
+            return
 
     @pyqtSlot()
     def __delete_user(self):
         """
         Метод удаляет пользователя из БД и заново заполняет список.
         """
-        if self.__current_user:
-            # Удаление выделенного пользователя
-            try:
-                self.__db.delete_user(self.__current_user[0])
-            except (Exception, Error) as error:
-                print(error)
-            # Выключение кнопки и удаление переменной текущего пользователя
-            self.delete_user_push_button.setEnabled(False)
-            self.__current_user = None
+        qm = QMessageBox
+        reply = qm.question(self, wrd.hint_on_list_of_user['change_user_group_delete_user_title'],
+                            wrd.hint_on_list_of_user['change_user_group_delete_user_text'],
+                            qm.Yes | qm.No)
+        # ответ
+        if reply == qm.Yes:
+            if self.__current_user:
+                # Удаление выделенного пользователя
+                try:
+                    self.__db.delete_user(self.__current_user[0])
+                except (Exception, Error) as error:
+                    print(error)
+                # Выключение кнопки и удаление переменной текущего пользователя
+                self.delete_user_push_button.setEnabled(False)
+                self.__current_user = None
 
-            self.__db.connection.commit()
-            self.__fill_user_list()
+                self.__db.connection.commit()
+                self.__fill_user_list()
 
+            else:
+                # остальные случаи
+                QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
+                                  wrd.hint_on_list_of_user['delete_error_text'])
         else:
-            # остальные случаи
-            QMessageBox.about(self, wrd.hint_on_list_of_user['delete_error_title'],
-                              wrd.hint_on_list_of_user['delete_error_text'])
+            return
