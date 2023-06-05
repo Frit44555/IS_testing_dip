@@ -208,6 +208,16 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def ger_tests_all(self):
+        """
+        Описание: Эта функция вернёт все существующие тесты.
+        Возвращает: таблицу тестов.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('ger_tests_all')
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
     def get_groups_users(self):
         """
         Описание: Эта функция вернёт все группы пользователей.
