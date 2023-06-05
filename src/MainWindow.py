@@ -81,9 +81,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.__destroy_active_widget(self.__lesson)
                 if self.__testing:
                     self.__destroy_active_widget(self.__testing)
+
                 self.__list_search.show()
+
             except BaseException as BE:
                 print('FATAL ERROR:', BE)
+
         if len(self.__user) == 6:
             try:
                 self.__main_for_admin.show()
