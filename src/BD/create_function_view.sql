@@ -55,6 +55,9 @@ DROP FUNCTION IF EXISTS get_results_all;
 -- Функция получения результатов по пользователю
 DROP FUNCTION IF EXISTS get_results_user;
 
+--Функция получения ответов на вопросы заданного теста, сортированных по вопросам
+DROP FUNCTION IF EXISTS get_sorted_questions;
+
 -- Функция отправки списка пользователей для администратора
 DROP FUNCTION IF EXISTS get_list_users;
 
@@ -607,6 +610,25 @@ $$
 $$
 LANGUAGE SQL;
 
+--Функция получения ответов на вопросы заданного теста, сортированных по вопросам
+CREATE OR REPLACE FUNCTION get_sorted_questions(in_test_id int)
+RETURNS TABLE(quest_id int, answer_id int, bals int, correct boolean) AS
+$$
+	/*
+	Описание: Эта функция отправляет ответы на вопросы по заданному тесту в виде таблицы.
+				Отсортировано по колонке ID вопроса по убыванию.
+	Принимает аргументы: ID теста.
+	Возвращает: таблицу(ID вопроса, ID ответа, балл, верность решения).
+	*/
+	SELECT q.quest_id, answer_id, q.bals, correct
+	FROM tests t
+	JOIN questions q ON q.quest_id = ANY(t.quest_id)
+	JOIN answers a ON a.quest_id = q.quest_id
+	WHERE t.test_id = in_test_id
+	ORDER BY q.quest_id DESC;
+$$
+LANGUAGE SQL;
+
 -- Функция создания ответа
 CREATE OR REPLACE FUNCTION create_answer(in_quest_id int, in_answered text, in_correct boolean DEFAULT FALSE)
 RETURNS int AS
@@ -857,7 +879,7 @@ LANGUAGE SQL;
 представление, чтобы лишний раз не ображаться к БД из приложение.
 */
 CREATE VIEW middle_bals AS
-SELECT tests.test_id, type_test, SUM(rbt)::float8 / (COUNT(rbt)/tests.quantity_of_questions)::float8 AS middle_bal
+SELECT tests.test_id, type_test, SUM(rbt)::float8 / (COUNT(rbt)::float8/tests.quantity_of_questions::float8) AS middle_bal
 FROM tests
 JOIN LATERAL return_bals_on_test(tests.test_id) AS rbt on TRUE
 GROUP BY tests.test_id;

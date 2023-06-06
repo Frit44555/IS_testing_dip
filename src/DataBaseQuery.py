@@ -89,6 +89,17 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def return_bals_on_test(self, test_id):
+        """
+        Описание: Эта функция вернёт данные, которые необходимы для сборки приложения.
+        Принимает аргументы: ID группы пользователя.
+        Возвращает: ID учебного материала и его название.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('return_bals_on_test', [test_id, ])
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
     def get_name_time_type_note_on_test(self, test_id):
         """
         Описание: Эта функция вернёт названия теста, время прохождения, тип, количества вопросов и примечание.
@@ -184,6 +195,17 @@ class DataBaseQuery:
         :return list or errcode=1
         """
         self.__cursor.callproc('get_list_users')
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
+    def get_sorted_questions(self, test_id):
+        """
+        Описание: Эта функция отправляет ответы на вопросы по заданному тесту в виде таблицы.
+                    Отсортировано по колонке ID вопроса по убыванию.
+        Принимает аргументы: ID теста.
+        Возвращает: таблицу(ID вопроса, ID ответа, балл, верность решения).
+        """
+        self.__cursor.callproc('get_sorted_questions', [test_id, ])
         result = self.__cursor.fetchall()
         return result if result else 1
 
