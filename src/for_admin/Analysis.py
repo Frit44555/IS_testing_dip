@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 from UI.form_for_admin.Ui_Analysis import Ui_Analysis
+from PyQt5.QtCore import pyqtSlot
 from psycopg2 import Error
 import numpy as np
 
@@ -22,11 +23,18 @@ class Analysis(QWidget, Ui_Analysis):
         self.__fill_list_test()
         # ________________________________
 
+        # Опции________________________________
+        self.show_result_test_button.setEnabled(False)
+        self.show_result_user_button.setEnabled(False)
+        # ________________________________
+
     def __set_action(self):
         """
         Устанавливает действия кнопкам
         """
         self.show_result_test_button.clicked.connect(self.__show_statistic_test)
+        self.result_test_list_widget.clicked.connect(self.__get_index_test)
+        self.result_user_list_widget.clicked.connect(self.__get_index_user)
 
     def __fill_list_users(self):
         """
@@ -78,10 +86,19 @@ class Analysis(QWidget, Ui_Analysis):
 
             self.result_test_list_widget.addItem(elem_list)
 
+    def __get_index_test(self):
+        self.show_result_test_button.setEnabled(True)
+        self.__index_test = self.result_test_list_widget.selectedIndexes()[0].row()
+
+    def __get_index_user(self):
+        self.show_result_user_button.setEnabled(True)
+        self.__index_user = self.result_user_list_widget.selectedIndexes()[0].row()
+
+    @pyqtSlot()
     def __show_statistic_test(self):
         # Item выбранного элемента
-        index = self.result_test_list_widget.selectedIndexes()[0].row()
-        test = self.__tests_all[index]
+
+        test = self.__tests_all[self.__index_test]
         data = self.__calculation_statistic_test(test)
 
         if not self.__statistic_test:
@@ -94,52 +111,34 @@ class Analysis(QWidget, Ui_Analysis):
             self.vertical_layout_graph_result_test.addWidget(self.__statistic_test)
 
     def __calculation_statistic_test(self, test):
+        test_id = test[0]
+        test_name = test[3]
+        quantity_quests = len(test[1])
+        quantity_quests_in_testing = test[5]
+
         try:
-            test_id = test[0]
-            test_name = test[3]
-            quantity_quests = len(test[1])
-            quantity_quests_in_testing = test[5]
+            all_bals_on_test = self.__db.get_sorted_questions(test_id)
+            middle_score = self.__db.get_middle_bals_on_test(test_id)
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
 
-            try:
-                all_bals_on_test = self.__db.get_sorted_questions(test_id)
-                middle_score = self.__db.get_middle_bals_on_test(test_id)
-            except (Exception, Error) as error:
-                print('ERROR QUERY:', error)
+        dict_value = dict()
+        key = 0
+        for row in all_bals_on_test:
+            if row[0] in dict_value:
+                dict_value[row[0]] = dict_value[row[0]] + [row[-2] if row[-1] else 0, ]
+            else:
+                dict_value[row[0]] = [row[-2] if row[-1] else 0, ]
+                key = row[0]
 
-            dict_value = dict()
-            key = 0
-            for row in all_bals_on_test:
-                if row[0] in dict_value:
-                    dict_value[row[0]] = dict_value[row[0]] + [row[-2] if row[-1] else 0, ]
-                else:
-                    dict_value[row[0]] = [row[-2] if row[-1] else 0, ]
-                    key = row[0]
+        general_variance = np.var(all_bals_on_test)
+        quest_variance = 0
+        general_selection = len(dict_value[key])
+        difficulty = []
+        for lst in dict_value.values():
+            quest_variance += np.var(lst)
+            difficulty.append((len(lst) - lst.count(0)) / general_selection)
 
-            general_variance = np.var(all_bals_on_test)
-            quest_variance = 0
-            general_selection = len(dict_value[key])
-            difficulty = []
-            middle_score = []
-            for lst in dict_value.values():
-                quest_variance += np.var(lst)
-                difficulty.append((len(lst) - lst.count(0)) / general_selection)
-                temp_true = [i for i in lst if i]
-                middle_score.append(sum(temp_true) / len(temp_true))
+        reliability = (quantity_quests_in_testing / (quantity_quests_in_testing - 1)) *  (1 - (quest_variance / general_variance))
 
-            reliability = quantity_quests_in_testing / (quantity_quests_in_testing - 1) * \
-                          (1 - (quest_variance / general_variance))
-
-            midle_difficulty_test = sum(difficulty) / len(difficulty)
-
-            difference = dict()
-            for i in range(len(difficulty)):
-
-
-
-
-
-            return test_name, quantity_quests, quantity_quests_in_testing, str(round(middle_score[2], 2)), reliability
-        except BaseException as be:
-            print(be)
-
-
+        return test_name, quantity_quests, quantity_quests_in_testing, round(middle_score[2], 2), round(reliability, 2), difficulty

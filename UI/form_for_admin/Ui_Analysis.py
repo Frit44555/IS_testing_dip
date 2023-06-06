@@ -76,11 +76,13 @@ class Ui_Analysis(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.show_result_user_button.sizePolicy().hasHeightForWidth())
         self.show_result_user_button.setSizePolicy(sizePolicy)
-        self.show_result_user_button.setMinimumSize(QtCore.QSize(450, 0))
+        self.show_result_user_button.setMinimumSize(QtCore.QSize(600, 0))
         font = QtGui.QFont()
         font.setPointSize(13)
         self.show_result_user_button.setFont(font)
-        self.show_result_user_button.setStyleSheet("background-color: rgb(213, 122, 9);")
+        self.show_result_user_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                                    "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QPushButton:disabled{ background:#a2979c; }")
         self.show_result_user_button.setObjectName("show_result_user_button")
         self.vertical_layout_list.addWidget(self.show_result_user_button)
         self.horizontalLayout_2.addLayout(self.vertical_layout_list)
@@ -118,11 +120,13 @@ class Ui_Analysis(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.show_result_test_button.sizePolicy().hasHeightForWidth())
         self.show_result_test_button.setSizePolicy(sizePolicy)
-        self.show_result_test_button.setMinimumSize(QtCore.QSize(500, 0))
+        self.show_result_test_button.setMinimumSize(QtCore.QSize(600, 0))
         font = QtGui.QFont()
         font.setPointSize(13)
         self.show_result_test_button.setFont(font)
-        self.show_result_test_button.setStyleSheet("background-color: rgb(213, 122, 9);")
+        self.show_result_test_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                                    "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QPushButton:disabled{ background:#a2979c; }")
         self.show_result_test_button.setObjectName("show_result_test_button")
         self.vertical_layout_list2.addWidget(self.show_result_test_button)
         self.horizontalLayout_3.addLayout(self.vertical_layout_list2)
