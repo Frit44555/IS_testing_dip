@@ -5,6 +5,7 @@ from psycopg2 import Error
 import numpy as np
 
 from src.for_admin.StatisticTestForAdmin import StatisticTestForAdmin
+from src.for_admin.GraphStatisticTest import GraphStatisticTest
 
 
 class Analysis(QWidget, Ui_Analysis):
@@ -15,6 +16,7 @@ class Analysis(QWidget, Ui_Analysis):
         # Переменные________________________________
         self.__db = data_base
         self.__statistic_test = None
+        self.__plot = None
         # ________________________________
 
         # Функции________________________________
@@ -87,20 +89,40 @@ class Analysis(QWidget, Ui_Analysis):
             self.result_test_list_widget.addItem(elem_list)
 
     def __get_index_test(self):
+        """
+        Получение индекса выбранного теста и включение кнопки посмотреть.
+        """
         self.show_result_test_button.setEnabled(True)
         self.__index_test = self.result_test_list_widget.selectedIndexes()[0].row()
 
     def __get_index_user(self):
+        """
+        Получение индекса выбранного пользователя и  и включение кнопки посмотреть.
+        """
         self.show_result_user_button.setEnabled(True)
         self.__index_user = self.result_user_list_widget.selectedIndexes()[0].row()
 
     @pyqtSlot()
     def __show_statistic_test(self):
+        """
+        Метод добавляет виджеты статистики по тесту на главный виджет.
+        """
         # Item выбранного элемента
 
         test = self.__tests_all[self.__index_test]
         data = self.__calculation_statistic_test(test)
 
+        # график
+        if not self.__statistic_test:
+            self.__plot = GraphStatisticTest(parent=self, ordinate=data[-1])
+            self.vertical_layout_graph_result_test.addWidget(self.__plot)
+        else:
+            self.__plot.setParent(None)
+            self.__plot = None
+            self.__plot = GraphStatisticTest(parent=self, ordinate=data[-1])
+            self.vertical_layout_graph_result_test.addWidget(self.__plot)
+
+        # статистика
         if not self.__statistic_test:
             self.__statistic_test = StatisticTestForAdmin(parent=self, data=data)
             self.vertical_layout_graph_result_test.addWidget(self.__statistic_test)
@@ -111,34 +133,43 @@ class Analysis(QWidget, Ui_Analysis):
             self.vertical_layout_graph_result_test.addWidget(self.__statistic_test)
 
     def __calculation_statistic_test(self, test):
+        """
+        Метод считает статистику по тесту.
+        :param test
+        """
+        # Необходимые данные для расчётов из списка переданного теста
         test_id = test[0]
         test_name = test[3]
         quantity_quests = len(test[1])
         quantity_quests_in_testing = test[5]
 
+        # выборка данных с БД
         try:
             all_bals_on_test = self.__db.get_sorted_questions(test_id)
             middle_score = self.__db.get_middle_bals_on_test(test_id)
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
+        # словарь, где ключ это номер задания, а значение это полученные баллы по этому заданию
         dict_value = dict()
-        key = 0
+        key = 0  # необходима для получения количества полученных баллов
         for row in all_bals_on_test:
+            # заполнение словаря
             if row[0] in dict_value:
                 dict_value[row[0]] = dict_value[row[0]] + [row[-2] if row[-1] else 0, ]
             else:
                 dict_value[row[0]] = [row[-2] if row[-1] else 0, ]
                 key = row[0]
 
-        general_variance = np.var(all_bals_on_test)
-        quest_variance = 0
-        general_selection = len(dict_value[key])
-        difficulty = []
+        general_variance = np.var(all_bals_on_test)  # общая дисперсия теста
+        quest_variance = 0                           # дисперсия баллов по заданию теста
+        general_selection = len(dict_value[key])     # общая выборка, т.е. сколько было получено заданий
+        difficulty = []                              # сложность каждого задания
         for lst in dict_value.values():
-            quest_variance += np.var(lst)
+            quest_variance += np.var(lst)  # подсчёт суммы дисперсий, это числитель формулы
             difficulty.append((len(lst) - lst.count(0)) / general_selection)
 
+        # коэффициент надёжности
         reliability = (quantity_quests_in_testing / (quantity_quests_in_testing - 1)) *  (1 - (quest_variance / general_variance))
 
         return test_name, quantity_quests, quantity_quests_in_testing, round(middle_score[2], 2), round(reliability, 2), difficulty
