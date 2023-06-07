@@ -6,6 +6,7 @@ import numpy as np
 
 from src.for_admin.StatisticTestForAdmin import StatisticTestForAdmin
 from src.for_admin.GraphStatisticTest import GraphStatisticTest
+from src.ResultUser import ResultUser
 
 
 class Analysis(QWidget, Ui_Analysis):
@@ -17,6 +18,7 @@ class Analysis(QWidget, Ui_Analysis):
         self.__db = data_base
         self.__statistic_test = None
         self.__plot = None
+        self.__result_user = None
         # ________________________________
 
         # Функции________________________________
@@ -37,6 +39,7 @@ class Analysis(QWidget, Ui_Analysis):
         self.show_result_test_button.clicked.connect(self.__show_statistic_test)
         self.result_test_list_widget.clicked.connect(self.__get_index_test)
         self.result_user_list_widget.clicked.connect(self.__get_index_user)
+        self.show_result_user_button.clicked.connect(self.__show_statistics_user)
 
     def __fill_list_users(self):
         """
@@ -97,10 +100,18 @@ class Analysis(QWidget, Ui_Analysis):
 
     def __get_index_user(self):
         """
-        Получение индекса выбранного пользователя и  и включение кнопки посмотреть.
+        Получение индекса выбранного пользователя и включение кнопки посмотреть.
         """
-        self.show_result_user_button.setEnabled(True)
-        self.__index_user = self.result_user_list_widget.selectedIndexes()[0].row()
+        try:
+            self.show_result_user_button.setEnabled(True)
+            index = self.result_user_list_widget.selectedIndexes()[0].data()
+            start = index.find('|')
+            stop = start + index[start + 1:].find('|')
+            self.__index_user = int(index[start + 18:stop].strip())
+            print(self.__index_user, type(self.__index_user))
+
+        except BaseException as be:
+            print(be)
 
     @pyqtSlot()
     def __show_statistic_test(self):
@@ -108,7 +119,6 @@ class Analysis(QWidget, Ui_Analysis):
         Метод добавляет виджеты статистики по тесту на главный виджет.
         """
         # Item выбранного элемента
-
         test = self.__tests_all[self.__index_test]
         data = self.__calculation_statistic_test(test)
 
@@ -173,3 +183,20 @@ class Analysis(QWidget, Ui_Analysis):
         reliability = (quantity_quests_in_testing / (quantity_quests_in_testing - 1)) *  (1 - (quest_variance / general_variance))
 
         return test_name, quantity_quests, quantity_quests_in_testing, round(middle_score[2], 2), round(reliability, 2), difficulty
+
+    def __show_statistics_user(self):
+        """
+        Показывает статистику результата пользователя.
+        :return None
+        """
+        print(self.__index_user)
+        if self.__result_user:
+            self.__result_user.setParent(None)
+            self.__result_user = None
+            self.__result_user = ResultUser(parent=self, data=self.__db.get_results_user(self.__index_user),
+                                            data_base=self.__db)
+            self.vertical_layout_graph_result_user.addWidget(self.__result_user)
+        else:
+            self.__result_user = ResultUser(parent=self, data=self.__db.get_results_user(self.__index_user),
+                                            data_base=self.__db)
+            self.vertical_layout_graph_result_user.addWidget(self.__result_user)
