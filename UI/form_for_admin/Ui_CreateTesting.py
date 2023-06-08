@@ -53,6 +53,9 @@ class Ui_CreateTesting(object):
         self.type_testing_combo_box.addItem("")
         self.type_testing_combo_box.addItem("")
         self.type_testing_combo_box.addItem("")
+        self.type_testing_combo_box.setStyleSheet("QComboBox { background-color: rgb(213, 122, 9);}\n"
+                                                    "QComboBox:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QComboBox:disabled{ background:#a2979c; }")
         self.horizontalLayout.addWidget(self.type_testing_combo_box)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
@@ -71,6 +74,9 @@ class Ui_CreateTesting(object):
         self.quantity_spin_box.setFont(font)
         self.quantity_spin_box.setMinimum(5)
         self.quantity_spin_box.setMaximum(60)
+        self.quantity_spin_box.setStyleSheet("QSpinBox { background-color: rgb(213, 122, 9);}\n"
+                                         "QSpinBox:enabled{ color: rgb(255, 255, 255); }\n"
+                                         "QSpinBox:disabled{ background:#a2979c; }")
         self.quantity_spin_box.setObjectName("quantity_spin_box")
         self.gridLayout.addWidget(self.quantity_spin_box, 0, 1, 1, 1)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -87,6 +93,9 @@ class Ui_CreateTesting(object):
         self.time_spin_box.setFont(font)
         self.time_spin_box.setMinimum(5)
         self.time_spin_box.setMaximum(60)
+        self.time_spin_box.setStyleSheet("QSpinBox { background-color: rgb(213, 122, 9);}\n"
+                                                    "QSpinBox:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QSpinBox:disabled{ background:#a2979c; }")
         self.time_spin_box.setObjectName("time_spin_box")
         self.gridLayout.addWidget(self.time_spin_box, 1, 1, 1, 1)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -99,7 +108,9 @@ class Ui_CreateTesting(object):
         font = QtGui.QFont()
         font.setPointSize(11)
         self.check_properties.setFont(font)
-        self.check_properties.setStyleSheet("background-color: rgb(213, 122, 9);")
+        self.check_properties.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                                    "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QPushButton:disabled{ background:#a2979c; }")
         self.check_properties.setObjectName("check_properties")
         self.horizontalLayout_2.addWidget(self.check_properties)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -144,16 +155,18 @@ class Ui_CreateTesting(object):
         font = QtGui.QFont()
         font.setPointSize(13)
         self.create_testing_push_button.setFont(font)
-        self.create_testing_push_button.setStyleSheet("QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
-                                               "QPushButton:disabled{ background:#a2979c; }")
+        self.create_testing_push_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                                    "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QPushButton:disabled{ background:#a2979c; }")
         self.create_testing_push_button.setObjectName("create_testing_push_button")
         self.horizontal_layout_bottom.addWidget(self.create_testing_push_button)
         self.close_push_button = QtWidgets.QPushButton(CreateTesting)
         font = QtGui.QFont()
         font.setPointSize(13)
         self.close_push_button.setFont(font)
-        self.close_push_button.setStyleSheet("QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
-                                               "QPushButton:disabled{ background:#a2979c; }")
+        self.close_push_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                                    "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+                                                    "QPushButton:disabled{ background:#a2979c; }")
         self.close_push_button.setObjectName("close_push_button")
         self.horizontal_layout_bottom.addWidget(self.close_push_button)
         self.verticalLayout_2.addLayout(self.horizontal_layout_bottom)
