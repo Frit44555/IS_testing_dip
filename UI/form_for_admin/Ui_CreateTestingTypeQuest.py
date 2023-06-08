@@ -14,15 +14,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_CreateTestingTypeQuest(object):
     def setupUi(self, CreateTestingTypeQuest):
         CreateTestingTypeQuest.setObjectName("CreateTestingTypeQuest")
-        CreateTestingTypeQuest.resize(765, 25)
-        CreateTestingTypeQuest.setMinimumSize(QtCore.QSize(0, 25))
-        CreateTestingTypeQuest.setMaximumSize(QtCore.QSize(16777215, 25))
+        CreateTestingTypeQuest.resize(765, 236)
+        CreateTestingTypeQuest.setMinimumSize(QtCore.QSize(0, 0))
+        CreateTestingTypeQuest.setMaximumSize(QtCore.QSize(16777215, 16777215))
         CreateTestingTypeQuest.setStyleSheet("color: rgb(255, 255, 255);\n"
                                              "background-color: rgb(13, 130, 149);\n"
                                              "")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(CreateTestingTypeQuest)
-        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.verticalLayout = QtWidgets.QVBoxLayout(CreateTestingTypeQuest)
+        self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -38,7 +37,7 @@ class Ui_CreateTestingTypeQuest(object):
         font = QtGui.QFont()
         font.setPointSize(9)
         self.type_testing_combo_box.setFont(font)
-        self.type_testing_combo_box.setObjectName("choose_user_combo_box")
+        self.type_testing_combo_box.setObjectName("type_testing_combo_box")
         self.horizontalLayout.addWidget(self.type_testing_combo_box)
         self.check_properties = QtWidgets.QPushButton(CreateTestingTypeQuest)
         font = QtGui.QFont()
@@ -49,7 +48,12 @@ class Ui_CreateTestingTypeQuest(object):
         self.horizontalLayout.addWidget(self.check_properties)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.horizontalLayout_2.addLayout(self.horizontalLayout)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.worl_vertical_layout = QtWidgets.QVBoxLayout()
+        self.worl_vertical_layout.setObjectName("worl_vertical_layout")
+        self.verticalLayout.addLayout(self.worl_vertical_layout)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 176, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem2)
 
         self.retranslateUi(CreateTestingTypeQuest)
         QtCore.QMetaObject.connectSlotsByName(CreateTestingTypeQuest)
