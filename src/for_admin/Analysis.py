@@ -19,6 +19,10 @@ class Analysis(QWidget, Ui_Analysis):
         self.__statistic_test = None
         self.__plot = None
         self.__result_user = None
+        self.__list_users = None
+        self.__list_tests = None
+        self.__index_test = None
+        self.__index_user = None
         # ________________________________
 
         # Функции________________________________
@@ -46,23 +50,21 @@ class Analysis(QWidget, Ui_Analysis):
         Заполняет список пользователей
         """
         try:
-            self.__results_all = self.__db.get_results_all()
+            self.__list_users = self.__db.get_list_users()
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
-        if self.__results_all == 1:
+        if self.__list_users == 1:
             return
 
         self.result_user_list_widget.clear()
-        for row in self.__results_all:
-            # ID результата, ID пользователя, ID теста, массив ответов, время начала, время конца, коммент админа,
-            # коммент пользователя, статус проверки
+        for row in self.__list_users:
+            # ID пользователя, группа пользователя, логин, имя, фамилию, отчество, дату регистрации примечание
             elem_list = ''
             elem_list += 'Номер: ' + str(row[0]) + ' | '
-            elem_list += 'ID пользователя: ' + str(row[1]) + ' | '
-            elem_list += 'Тест: ' + str(row[2]) + ' | '
-            elem_list += 'Начал: ' + str(row[4])[:-7] + ' | '
-            elem_list += 'Закончил: ' + str(row[5])[:-7] + ' | '
+            elem_list += 'Группа: ' + str(row[1]) + ' | '
+            elem_list += 'Фамилия: ' + row[4] + ' | '
+            elem_list += 'Имя: ' + row[3] + ' | '
 
             self.result_user_list_widget.addItem(elem_list)
 
@@ -71,15 +73,15 @@ class Analysis(QWidget, Ui_Analysis):
         Заполняет список статистики тестов
         """
         try:
-            self.__tests_all = self.__db.ger_tests_all()
+            self.__list_tests = self.__db.ger_tests_all()
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
-        if self.__tests_all == 1:
+        if self.__list_tests == 1:
             return
 
         self.result_test_list_widget.clear()
-        for row in self.__tests_all:
+        for row in self.__list_tests:
             # ID теста, массив вопросов, ID тега, название, тип, количество тестов, время выполнения, примечание
             elem_list = ''
             elem_list += 'Тест №: ' + str(row[0]) + ' | '
@@ -105,10 +107,8 @@ class Analysis(QWidget, Ui_Analysis):
         try:
             self.show_result_user_button.setEnabled(True)
             index = self.result_user_list_widget.selectedIndexes()[0].data()
-            start = index.find('|')
-            stop = start + index[start + 1:].find('|')
-            self.__index_user = int(index[start + 18:stop].strip())
-            print(self.__index_user, type(self.__index_user))
+            separator = index.find('|')
+            self.__index_user = int(index[6:separator].strip())
 
         except BaseException as be:
             print(be)
@@ -119,7 +119,7 @@ class Analysis(QWidget, Ui_Analysis):
         Метод добавляет виджеты статистики по тесту на главный виджет.
         """
         # Item выбранного элемента
-        test = self.__tests_all[self.__index_test]
+        test = self.__list_tests[self.__index_test]
         data = self.__calculation_statistic_test(test)
 
         # график
@@ -189,7 +189,6 @@ class Analysis(QWidget, Ui_Analysis):
         Показывает статистику результата пользователя.
         :return None
         """
-        print(self.__index_user)
         if self.__result_user:
             self.__result_user.setParent(None)
             self.__result_user = None
