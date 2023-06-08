@@ -78,3 +78,13 @@ hint_on_list_of_user = {
     'tags_delete_group_title': 'Подтверждение',
     'tags_delete_group_text': 'Вы уверены что хотите удалить тег',
 }
+
+creater_testing = {
+    'create_test_difference_quantity_quest_title': 'Ошибка',
+    'create_test_difference_quantity_quest_text': 'Вы не заполняли все задания',
+    'not_all_filled_title': 'Заполните всё',
+    'not_all_filled_text': 'Вы заполнены не все обязательные поля. Чтобы создать задание '
+                           'этого типа все поля должны быть заполнены.', \
+    'answer_not_chosed_title': 'Ответ не выбран',
+    'answer_not_chosed_text': 'Вы не выбрали ответ на задание! Прежде чем подтверждать, выберите правильный ответ.'
+}
