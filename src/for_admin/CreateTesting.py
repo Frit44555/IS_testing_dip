@@ -5,6 +5,7 @@ from psycopg2 import Error
 
 # My widgets
 from src.for_admin.CreateTestingTypeQuest import CreateTestingTypeQuest
+from src.for_admin.dialog_admin.CreateTestingFinish import CreateTestingFinish
 
 
 class CreateTesting(QWidget, Ui_CreateTesting):
@@ -14,10 +15,17 @@ class CreateTesting(QWidget, Ui_CreateTesting):
 
         # Переменные________________________________
         self.__db = data_base
+        self.__dialog = None
         self.__time = None
         self.__quantity = None
         self.__current_quantity = 0
         self.__questions = []
+        self.__type_test = {
+            'Предопределенные ответы': 'PREDEFINED',
+            'Смешанный (без шкал)': 'MIXED',
+            'Только шкалы (от 0 до 10)': 'SCALE',
+            'Только свободные ответы': 'FREE RESPONSE'
+        }
         # ________________________________
 
         # Функции________________________________
@@ -42,7 +50,7 @@ class CreateTesting(QWidget, Ui_CreateTesting):
         Устанавливает действия кнопкам.
         """
         self.check_properties.clicked.connect(self.__check)
-        self.close_push_button.clicked.connect(self.__close_creator)
+        self.close_push_button.clicked.connect(self._close_creator)
         self.create_testing_push_button.clicked.connect(self.__create_test)
 
     def __check(self):
@@ -90,7 +98,9 @@ class CreateTesting(QWidget, Ui_CreateTesting):
         self.close_push_button.setEnabled(True)
         self.create_testing_push_button.setEnabled(True)
 
-    def __close_creator(self):
+    def _close_creator(self):
+        if self.__dialog:
+            self.__dialog = None
         self.__time = None
         self.__quantity = None
         self.create_quests_tab_widget.clear()
@@ -106,26 +116,24 @@ class CreateTesting(QWidget, Ui_CreateTesting):
         self.close_push_button.setEnabled(False)
         self.create_testing_push_button.setEnabled(False)
 
-    def __create_test(self, tag_id, name, type_testing, quantity_of_questions):
+    def __create_test(self):  # , tag_id, name, type_testing, quantity_of_questions):
         if self.__quantity != len(self.__questions):
             QMessageBox.about(self, wrd.creater_testing['create_test_difference_quantity_quest_title'],
                               wrd.creater_testing['create_test_difference_quantity_quest_text'])
             return
 
         # создание вопросов
-        quest_id = []
+        quest_id = []  # ID заданий
         for row in self.__questions:
             try:
                 #  тип вопроса, ВОПРОС, балл, картинка, четыре ответа, и правильный ответ.
-                quest_id.extend(self.__db.create_question(row[0], row[1], row[2], row[3], row[4]))
+                quest_id.extend(self.__db.create_question(row[0], row[1], row[2], row[3], row[4], row[5], row[6],
+                                                          row[7], row[8]))
             except (Exception, Error) as error:
                 print('ERROR QUERY:', error)
-        print(quest_id)
-        # создание теста
-        try:
-            # массив ID вопросов, ID тег, название, тип теста, количество заданий,
-            self.__db.create_test(quest_id, tag_id, name, type_testing, quantity_of_questions)
-        except (Exception, Error) as error:
-            print('ERROR QUERY:', error)
 
-        self.__close_creator()
+        self.__dialog = CreateTestingFinish(root=self, data_base=self.__db, questions=quest_id,
+                                            type_testing=self.__type_test[self.type_testing_combo_box.currentText()],
+                                            quantity_of_questions=self.quantity_spin_box.value(),
+                                            time_to_complete=self.time_spin_box.value())
+        self.__dialog.show()
