@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from UI.form_for_admin.Ui_MainForAdmin import Ui_MainForAdmin
+from psycopg2 import Error
 
 # My widgets
 from src.for_admin.ListOfUser import ListOfUser
@@ -20,6 +21,7 @@ class MainForAdmin(QWidget, Ui_MainForAdmin):
 
         # Методы________________________________
         self.__set_action()
+        self.__fill_combobox_users()
         # ________________________________
 
         # Объекты________________________________
@@ -46,11 +48,31 @@ class MainForAdmin(QWidget, Ui_MainForAdmin):
         self.vertical_layout_tab_create_lesson.setObjectName("vertical_layout_tab_create_lesson")
         self.__create_lesson = CreateLesson(parent=self.tab_create_lesson, data_base=self.__db)
         self.vertical_layout_tab_create_lesson.addWidget(self.__create_lesson)
-
-        # tab check
-        self.__check_form = CheckResultTesting(parent=self.tab_check, data_base=self.__db)
-        self.vertical_layout_tab_check.addWidget(self.__check_form)
         # ________________________________
 
     def __set_action(self):
-        pass
+        self.start_check_push_button.clicked.connect(self.__start_check_result)
+
+    def __fill_combobox_users(self):
+        """
+        Метод заполняет combobox всех тегов
+        """
+        self.check_user_combo_box.clear()
+        try:
+            # Получение списка пользователей
+            self.__all_user = self.__db.get_list_users()
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
+        # в случае если список будет пустым, то вернётся код 1, и смысла продолжать заполнение нет
+        if self.__all_user == 1:
+            return
+
+        for row in self.__all_user:
+            self.check_user_combo_box.addItem(row[4] + ' ' + row[3] + ' ' + row[5])
+
+    def __start_check_result(self):
+        # tab check
+        current_user = self.__all_user[self.check_user_combo_box.currentIndex()]
+        self.__check_form = CheckResultTesting(parent=self.tab_check, data_base=self.__db, current_user=current_user)
+        self.vertical_layout_tab_check.addWidget(self.__check_form)
