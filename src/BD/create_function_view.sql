@@ -55,6 +55,9 @@ DROP FUNCTION IF EXISTS get_results_all;
 -- Функция получения результатов по пользователю
 DROP FUNCTION IF EXISTS get_results_user;
 
+-- Функция получения не проверенных результатов по пользователю
+DROP FUNCTION IF EXISTS get_results_user_is_no_verified;
+
 --Функция получения ответов на вопросы заданного теста, сортированных по вопросам
 DROP FUNCTION IF EXISTS get_sorted_questions;
 
@@ -594,6 +597,21 @@ $$
 	SELECT *
 	FROM results
 	WHERE results.user_id = in_user_id;
+$$
+LANGUAGE SQL;
+
+-- Функция получения результатов по пользователю
+CREATE OR REPLACE FUNCTION get_results_user_is_no_verified(in_user_id int)
+RETURNS SETOF results AS
+$$
+	/*
+	Описание: Эта функция отправляет не проверенные результаты пользователя.
+	Принимает аргументы: ID пользователя
+	Возвращает: таблицу результатов
+	*/
+	SELECT *
+	FROM results
+	WHERE results.user_id = in_user_id AND results.verified = FALSE;
 $$
 LANGUAGE SQL;
 

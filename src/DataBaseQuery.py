@@ -122,6 +122,17 @@ class DataBaseQuery:
         result = self.__cursor.fetchall()
         return result if result else 1
 
+    def get_results_user_is_no_verified(self, user_id):
+        """
+        Описание: Эта функция отправляет не проверенные результаты пользователя.
+        Принимает аргументы: ID пользователя.
+        Возвращает: таблицу результатов.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_results_user', [user_id, ])
+        result = self.__cursor.fetchone()
+        return result if result else 1
+
     def get_results_all(self):
         """
         Описание: Эта функция отправляет все результаты, предназначено для администратора.
