@@ -8,7 +8,7 @@ class Lesson(QWidget, Ui_Lesson):
         super().__init__(parent)
         self.setupUi(self)
 
-        # Функции________________________________
+        # Методы________________________________
         self.__fill_content(text)
         # ________________________________
 

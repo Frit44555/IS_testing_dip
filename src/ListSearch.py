@@ -30,7 +30,7 @@ class ListSearch(QWidget, Ui_ListSearch):
         self.__appointment_test_id = []
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
         self.__fill_tabl_test()
         self.__fill_tabl_lesson()
         self.__set_action()

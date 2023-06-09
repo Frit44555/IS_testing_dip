@@ -15,7 +15,7 @@ class ResultUser(QWidget, Ui_ResultUser):
         self.__statistic_test_for_user = None
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
         self.__set_action()
         self.__fill_result_list()
         # ________________________________

@@ -27,7 +27,7 @@ class CreateTesting(QWidget, Ui_CreateTesting):
         }
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
         self.__set_action()
         self.__fill_combobox_exists_tags()
         # ________________________________

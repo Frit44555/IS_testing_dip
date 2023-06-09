@@ -18,7 +18,8 @@ class MainForAdmin(QWidget, Ui_MainForAdmin):
         self.__db = data_base
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
+        self.__set_action()
         # ________________________________
 
         # Объекты________________________________
@@ -47,6 +48,9 @@ class MainForAdmin(QWidget, Ui_MainForAdmin):
         self.vertical_layout_tab_create_lesson.addWidget(self.__create_lesson)
 
         # tab check
-        self.__check_form = CheckResultTesting(parent=self.tab_check)
+        self.__check_form = CheckResultTesting(parent=self.tab_check, data_base=self.__db)
         self.vertical_layout_tab_check.addWidget(self.__check_form)
         # ________________________________
+
+    def __set_action(self):
+        pass

@@ -19,7 +19,7 @@ class CreateTestingTypeQuest(QWidget, Ui_CreateTestingTypeQuest):
         self.__tags = tags
         # ________________________________
 
-        # Опции и функции________________________________
+        # Опции и Методы________________________________
         self.__set_actions()
         self.type_testing_combo_box.addItems(self.__types)
         # ________________________________

@@ -25,7 +25,7 @@ class Analysis(QWidget, Ui_Analysis):
         self.__index_user = None
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
         self.__set_action()
         self.__fill_list_users()
         self.__fill_list_test()

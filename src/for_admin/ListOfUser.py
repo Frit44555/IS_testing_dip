@@ -27,7 +27,7 @@ class ListOfUser(QWidget, Ui_ListOfUser):
         self.__current_tag = None
         # ________________________________
 
-        # Функции________________________________
+        # Методы________________________________
         self.__fill_user_list()
         self.__fill_group_list()
         self.__fill_tag_list()
