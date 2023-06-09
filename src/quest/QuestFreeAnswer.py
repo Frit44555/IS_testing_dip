@@ -42,14 +42,11 @@ class QuestFreeAnswer(QWidget, Ui_QuestFreeAnswer):
         Проверяет, отвечал ли пользователь или нет, в случае если не отвечал, то предупредит об этом.
         :return None
         """
-        if not self.answer1_radio_button.isChecked() \
-                and not self.answer2_radio_button.isChecked() \
-                and not self.answer3_radio_button.isChecked() \
-                and not self.answer4_radio_button.isChecked():
+        if not self.answer_text_edit.toPlainText():
             QMessageBox.about(self, wrd.testing_quest['title'], wrd.testing_quest['text'])
         else:
             self.__status_answer_widget.answered()
-            self.__send_answer()
+            self.__send_answer(self.answer_text_edit.toPlainText())
 
     def __fill_quest(self):
         """
@@ -62,32 +59,10 @@ class QuestFreeAnswer(QWidget, Ui_QuestFreeAnswer):
         if self.__data[3]:
             self.picture_label.setPixmap()
 
-    def __check_answer(self):
-        """
-        Функция проверяет, какой ответ был выбран.
-        :return boolean
-        """
-        # ДОДЕЛАТЬ
-        answer = ''
-        if self.answer1_radio_button.isChecked():
-            answer = self.answer1_text_browser.toPlainText()
-        elif self.answer2_radio_button.isChecked():
-            answer = self.answer2_text_browser.toPlainText()
-        elif self.answer3_radio_button.isChecked():
-            answer = self.answer3_text_browser.toPlainText()
-        elif self.answer4_radio_button.isChecked():
-            answer = self.answer4_text_browser.toPlainText()
-
-        if answer == self.__data[9]:
-            return answer, True
-        else:
-            return answer, False
-
-    def __send_answer(self):
+    def __send_answer(self, answer):
         """
         Функция отправляет виджету Testing выбранный ответ.
         :return None
         """
         answer_id = self.__data[0]
-        answer, correct = self.__check_answer()
-        self.__testing.add_answer(answer_id, answer, correct)
+        self.__testing.add_answer(answer_id, answer)
