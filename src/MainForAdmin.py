@@ -43,7 +43,7 @@ class MainForAdmin(QWidget, Ui_MainForAdmin):
         # tab create lesson
         self.vertical_layout_tab_create_lesson = QVBoxLayout(self.tab_create_lesson)
         self.vertical_layout_tab_create_lesson.setObjectName("vertical_layout_tab_create_lesson")
-        self.__create_lesson = CreateLesson(parent=self.tab_create_lesson)
+        self.__create_lesson = CreateLesson(parent=self.tab_create_lesson, data_base=self.__db)
         self.vertical_layout_tab_create_lesson.addWidget(self.__create_lesson)
 
         # tab check

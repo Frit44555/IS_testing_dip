@@ -370,7 +370,7 @@ $$
 	*/
 	SELECT tests.name, tests.type_test, tests.quantity_of_questions, tests.time_to_complete, tests.note
 	FROM tests
-	WHERE tests.tag_id = in_test_id;
+	WHERE tests.test_id = in_test_id;
 $$
 LANGUAGE SQL;
 

@@ -5,7 +5,6 @@ from psycopg2 import Error
 
 # My widgets
 from src.for_admin.CreateTestingTypeQuest import CreateTestingTypeQuest
-from src.for_admin.dialog_admin.CreateTestingFinish import CreateTestingFinish
 
 
 class CreateTesting(QWidget, Ui_CreateTesting):
@@ -30,6 +29,7 @@ class CreateTesting(QWidget, Ui_CreateTesting):
 
         # Функции________________________________
         self.__set_action()
+        self.__fill_combobox_exists_tags()
         # ________________________________
 
         # Опции________________________________
@@ -52,6 +52,24 @@ class CreateTesting(QWidget, Ui_CreateTesting):
         self.check_properties.clicked.connect(self.__check)
         self.close_push_button.clicked.connect(self._close_creator)
         self.create_testing_push_button.clicked.connect(self.__create_test)
+
+    def __fill_combobox_exists_tags(self):
+        """
+        Метод заполняет combobox всех тегов
+        """
+        self.all_tags_combo_box.clear()
+        try:
+            # Получение тегов доступных группе и всех тегов
+            self.__all_tag = self.__db.get_tags()
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
+        # в случае если список будет пустым, то вернётся код 1, и смысла продолжать заполнение нет
+        if self.__all_tag == 1:
+            return
+
+        for row in self.__all_tag:
+            self.all_tags_combo_box.addItem(row[1])
 
     def __check(self):
         """
@@ -132,8 +150,20 @@ class CreateTesting(QWidget, Ui_CreateTesting):
             except (Exception, Error) as error:
                 print('ERROR QUERY:', error)
 
-        self.__dialog = CreateTestingFinish(root=self, data_base=self.__db, questions=quest_id,
-                                            type_testing=self.__type_test[self.type_testing_combo_box.currentText()],
-                                            quantity_of_questions=self.quantity_spin_box.value(),
-                                            time_to_complete=self.time_spin_box.value())
-        self.__dialog.show()
+        name = self.name_line_edit.text()
+        tag_id = self.all_tags_combo_box.currentIndex()
+        type_testing = self.__type_test[self.type_testing_combo_box.currentText()]
+        quantity_of_questions = self.quantity_spin_box.value()
+        time_to_complete = self.time_spin_box.value()
+        try:
+            self.__db.create_test(quest_id, self.__all_tag[tag_id][0], name, type_testing,
+                                  quantity_of_questions, time_to_complete)
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
+        try:
+            self.__db.connection.commit()
+        except (Exception, Error) as error:
+            print('ERROR QUERY:', error)
+
+        self._close_creator()

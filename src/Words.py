@@ -88,3 +88,8 @@ creater_testing = {
     'answer_not_chosed_title': 'Ответ не выбран',
     'answer_not_chosed_text': 'Вы не выбрали ответ на задание! Прежде чем подтверждать, выберите правильный ответ.'
 }
+
+create_lesson = {
+    'error_create_not_name_title': 'Пустое поле',
+    'error_create_not_name_text': 'Поле "название" должно быть заполнено!',
+}
