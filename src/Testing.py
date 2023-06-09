@@ -9,6 +9,8 @@ import random
 from UI.Ui_Testing import Ui_Testing
 from quest.QuestOneAnswer import QuestOneAnswer
 from quest.QuestManyAnswers import QuestManyAnswers
+from quest.QuestScale import QuestScale
+from quest.QuestFreeAnswer import QuestFreeAnswer
 
 
 class Testing(QWidget, Ui_Testing):
@@ -117,9 +119,9 @@ class Testing(QWidget, Ui_Testing):
         elif self.__questions[i][1] == 'MANY ANSWERS':
             return QuestManyAnswers(data=self.__questions[i], parent=self)
         elif self.__questions[i][1] == 'SCALE':
-            pass
+            return QuestScale(parent=self, data=self.__questions[i])
         elif self.__questions[i][1] == 'FREE RESPONSE':
-            pass
+            return QuestFreeAnswer(parent=self, data=self.__questions[i])
 
     @pyqtSlot()
     def __complete_testing(self):
