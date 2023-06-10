@@ -133,6 +133,17 @@ class DataBaseQuery:
         result = self.__cursor.fetchone()
         return result if result else 1
 
+    def get_questions_require_verification(self, result_id):
+        """
+        Описание: Эта функция отправляет не проверенные задания результата.
+        Принимает аргументы: ID результата.
+        Возвращает: ID ответа, вопрос, ответ пользователя, корректность.
+        :return list or errcode=1
+        """
+        self.__cursor.callproc('get_questions_require_verification', [result_id, ])
+        result = self.__cursor.fetchall()
+        return result if result else 1
+
     def get_results_all(self):
         """
         Описание: Эта функция отправляет все результаты, предназначено для администратора.

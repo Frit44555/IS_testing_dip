@@ -58,6 +58,9 @@ DROP FUNCTION IF EXISTS get_results_user;
 -- Функция получения не проверенных результатов по пользователю
 DROP FUNCTION IF EXISTS get_results_user_is_no_verified;
 
+-- Функция получения не проверенных ответов по результату
+DROP FUNCTION IF EXISTS get_questions_require_verification;
+
 --Функция получения ответов на вопросы заданного теста, сортированных по вопросам
 DROP FUNCTION IF EXISTS get_sorted_questions;
 
@@ -612,6 +615,23 @@ $$
 	SELECT *
 	FROM results
 	WHERE results.user_id = in_user_id AND results.verified = FALSE;
+$$
+LANGUAGE SQL;
+
+-- Функция получения не проверенных ответов по результату
+CREATE OR REPLACE FUNCTION get_questions_require_verification(in_result_id int)
+RETURNS TABLE(answer_id int, question text, answered text, correct boolean) AS
+$$
+	/*
+	Описание: Эта функция отправляет не проверенные задания результата.
+	Принимает аргументы: ID результата.
+	Возвращает: ID ответа, вопрос, ответ пользователя, корректность.
+	*/
+	SELECT a.answer_id, q.question, a.answered, a.correct
+	FROM answers a
+	JOIN results  on a.answer_id = ANY(results.answer_id)
+	JOIN questions q USING(quest_id)
+	WHERE results.result_id = in_result_id;
 $$
 LANGUAGE SQL;
 
