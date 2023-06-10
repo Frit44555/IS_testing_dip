@@ -78,7 +78,8 @@ class Ui_CheckResultTesting(object):
         font = QtGui.QFont()
         font.setPointSize(13)
         self.complete_button.setFont(font)
-        self.complete_button.setStyleSheet("QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+        self.complete_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                           "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
                                            "QPushButton:disabled{ background:#a2979c; }")
         self.complete_button.setObjectName("complete_button")
         self.gridLayout.addWidget(self.complete_button, 0, 1, 1, 1)
@@ -90,7 +91,8 @@ class Ui_CheckResultTesting(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         self.stop_button.setFont(font)
-        self.stop_button.setStyleSheet("QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
+        self.stop_button.setStyleSheet("QPushButton { background-color: rgb(213, 122, 9);}\n"
+                                       "QPushButton:enabled{ color: rgb(255, 255, 255); }\n"
                                        "QPushButton:disabled{ background:#a2979c; }")
         self.stop_button.setObjectName("stop_button")
         self.gridLayout.addWidget(self.stop_button, 1, 1, 1, 1)

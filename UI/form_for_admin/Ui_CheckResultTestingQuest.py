@@ -16,7 +16,7 @@ class Ui_CheckResultTestingQuest(object):
         CheckResultTestingQuest.setObjectName("CheckResultTestingQuest")
         CheckResultTestingQuest.resize(872, 331)
         CheckResultTestingQuest.setStyleSheet("color: rgb(255, 255, 255);\n"
-"background-color: rgb(13, 122, 149);")
+                                              "background-color: rgb(13, 122, 149);")
         self.verticalLayout = QtWidgets.QVBoxLayout(CheckResultTestingQuest)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(6)
@@ -109,6 +109,7 @@ class Ui_CheckResultTestingQuest(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     CheckResultTestingQuest = QtWidgets.QWidget()
     ui = Ui_CheckResultTestingQuest()
