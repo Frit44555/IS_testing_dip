@@ -40,19 +40,24 @@ class CheckResultTesting(QWidget, Ui_CheckResultTesting):
         Собирает проверку
         """
         try:
-            self.__quests = self.__db.get_results_user_is_no_verified(self.__current_user)
+            self.__quest = self.__db.get_results_user_is_no_verified(self.__current_user)
         except (Exception, Error) as error:
             print('ERROR QUERY:', error)
 
-        if self.__quests == 1:
+        if self.__quest == 1:
+            return
+
+        self.__answers = self.__db.get_questions_require_verification(self.__quest[3])
+
+        if self.__answers == 1:
             return
 
         # Заполнение вкладок TadWidget заданиями
-        for i in range(self.__quests):
+        for i in range(self.__answers):
             # Текущий индекс виджета
             index = self.quests_tab_widget.count()
             # виджет который добавиться на вкладку
-            tabPage = CheckResultTestingQuest(parent=self, data=self.__quests[i])
+            tabPage = CheckResultTestingQuest(parent=self, data=self.__answers[:3])
             # добавление страницы на вкладку
             self.quests_tab_widget.insertTab(index, tabPage, f"{i + 1}")
             self.quests_tab_widget.setCurrentIndex(index)
