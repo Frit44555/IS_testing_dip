@@ -10,3 +10,8 @@ class CheckResultTestingQuest(QWidget, Ui_CheckResultTestingQuest):
         # Переменные________________________________
         self.__data = data
         # ________________________________
+
+        # Заполнение полей________________________________
+        self.question_text_browser.setText(data[1])
+        self.answer_text_browser.setText(data[2])
+        # ________________________________
