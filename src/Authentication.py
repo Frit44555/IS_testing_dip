@@ -88,7 +88,7 @@ class Authentication(QWidget, Ui_Authentication):
                 user = self.__db.find_user(login, PH.primary_hash(password))
                 if user != 1:
                     # Передать кортеж с информацией о пользователе главному окну
-                    self.__main_window.put_form_for_user(user)
+                    self.__main_window._put_form_for_user(user)
                     # закрыть форму авторизации
                     self.close()
                 else:
@@ -113,7 +113,7 @@ class Authentication(QWidget, Ui_Authentication):
                 user = self.__db.find_admin(login, PH.primary_hash(password))
                 if user != 1:
                     # Передать кортеж с информацией об администраторе главному окну
-                    self.__main_window.put_form_for_admin(user)
+                    self.__main_window._put_form_for_admin(user)
                     # закрыть форму авторизации
                     self.close()
                 else:
@@ -155,7 +155,7 @@ class Authentication(QWidget, Ui_Authentication):
                 user = self.__db.find_user(login, PH.primary_hash(password))
                 if user != 1:
                     # Передать кортеж с информацией о пользователе главному окну
-                    self.__main_window.put_form_for_user(user)
+                    self.__main_window._put_form_for_user(user)
                     # закрыть форму авторизации
                     self.close()
                 else:

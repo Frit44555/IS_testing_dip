@@ -169,7 +169,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         elif isinstance(active_widget, MainForAdmin):
             self.__main_for_admin = None
 
-    def put_form_for_user(self, user):
+    def _put_form_for_user(self, user):
         """
         Заполнение главного окна, виджетами для пользователя.
         :param user:
@@ -186,7 +186,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         except BaseException as BE:
             print('FATAL ERROR:', BE)
 
-    def put_form_for_admin(self, user):
+    def _put_form_for_admin(self, user):
         """
         Заполнение главного окна, для администратора.
         :param user:
