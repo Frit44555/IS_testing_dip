@@ -7,3 +7,5 @@ How creat BD: create database "easy_tests", then execute queryes "create_tables_
 *Before as execute "create_function_view.sql" check extension BD, must exist pgcrypto. If its not, execute "create extension pgcrypto" for "easy_tests" database.
 
 After work done can start program src/__main__.py
+
+Program interacts with database via functions on the database. Does this class "DataBaseQuery" in dir src/DataBaseQuery.py
